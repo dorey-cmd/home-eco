@@ -1,8 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Layers, MapPin, Store, ChevronLeft } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const AppSettings = () => {
   const navigate = useNavigate();
+  const { profile } = useAuth();
+  const isBusiness = profile?.role === 'BUSINESS';
 
   const ActionButton = ({ icon: Icon, title, description, path }: { icon: any, title: string, description: string, path: string }) => (
     <button 
@@ -33,8 +36,8 @@ const AppSettings = () => {
       </div>
       
       <ActionButton icon={Layers} title="ניהול קטגוריות" description="מוצרי חלב, בשר, פירות וירקות, יבשים..." path="/settings/categories" />
-      <ActionButton icon={Store} title="ניהול חנויות קנייה" description="שופרסל, רמי לוי, ירקניה מקומית..." path="/settings/stores" />
-      <ActionButton icon={MapPin} title="ניהול מיקומי אחסון" description="מקרר, מזווה, ארון חומרי הניקוי..." path="/settings/locations" />
+      <ActionButton icon={Store} title={isBusiness ? "ניהול ספקים" : "ניהול חנויות קנייה"} description={isBusiness ? "עריכת הספקים הקבועים שלך" : "שופרסל, רמי לוי, ירקניה מקומית..."} path="/settings/stores" />
+      <ActionButton icon={MapPin} title={isBusiness ? "ניהול סניפים ומתחמים" : "ניהול מיקומי אחסון"} description={isBusiness ? "הגדרת רשימות לפי סניפי הרשת" : "מקרר, מזווה, ארון חומרי הניקוי..."} path="/settings/locations" />
 
     </div>
   );

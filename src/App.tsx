@@ -11,6 +11,9 @@ import EntityManagement from './pages/EntityManagement';
 import { fetchCategories, fetchLocations, fetchStores } from './api';
 import type { Category, Location, Store } from './api';
 
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Login from './pages/Login';
+
 // Context for global state mapping
 export const AppContext = React.createContext<{
   categories: Category[];
@@ -53,12 +56,28 @@ const BottomNav = () => {
   );
 };
 
-function App() {
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen"><div className="text-accent">טוען נתונים...</div></div>;
+  }
+  
+  if (!user) {
+    return <Login />;
+  }
+  
+  return <>{children}</>;
+};
+
+function AppContent() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
+  const { user } = useAuth();
 
   const refreshLookups = async () => {
+    if (!user) return;
     const [c, l, s] = await Promise.all([
       fetchCategories(),
       fetchLocations(),
@@ -71,27 +90,37 @@ function App() {
 
   useEffect(() => {
     refreshLookups();
-  }, []);
+  }, [user]);
 
   return (
     <AppContext.Provider value={{ categories, locations, stores, refreshLookups }}>
-      <BrowserRouter>
-        <div className="app-container">
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<InventoryList />} />
-              <Route path="/shopping" element={<ShoppingList />} />
-              <Route path="/add" element={<AddEditProduct />} />
-              <Route path="/edit/:id" element={<AddEditProduct />} />
-              <Route path="/settings" element={<AppSettings />} />
-              <Route path="/settings/:type" element={<EntityManagement />} />
-              <Route path="/reports" element={<Reports />} />
-            </Routes>
-          </main>
-          <BottomNav />
-        </div>
-      </BrowserRouter>
+      <div className="app-container">
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<InventoryList />} />
+            <Route path="/shopping" element={<ShoppingList />} />
+            <Route path="/add" element={<AddEditProduct />} />
+            <Route path="/edit/:id" element={<AddEditProduct />} />
+            <Route path="/settings" element={<AppSettings />} />
+            <Route path="/settings/:type" element={<EntityManagement />} />
+            <Route path="/reports" element={<Reports />} />
+          </Routes>
+        </main>
+        <BottomNav />
+      </div>
     </AppContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <ProtectedLayout>
+          <AppContent />
+        </ProtectedLayout>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

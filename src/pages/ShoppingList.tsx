@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { fetchProducts, updateProduct, addPurchase } from '../api';
 import type { Product } from '../api';
 import { AppContext } from '../App';
+import { useAuth } from '../context/AuthContext';
 import { ShoppingCart, CheckCircle, ExternalLink, Download, FileText, CheckSquare, Square, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ShoppingList = () => {
@@ -9,6 +10,8 @@ const ShoppingList = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [expandedStores, setExpandedStores] = useState<Set<string>>(new Set());
   const { stores } = useContext(AppContext);
+  const { profile } = useAuth();
+  const isBusiness = profile?.role === 'BUSINESS';
 
   useEffect(() => {
     loadProducts();
@@ -94,7 +97,8 @@ const ShoppingList = () => {
   // Group by store
   const groupedList = toBuyList.reduce((acc, p) => {
     const storeObj = stores.find(s => s.id === p.storeId);
-    const storeName = storeObj ? storeObj.name : 'שונות (ללא חנות)';
+    const fallbackName = isBusiness ? 'שונות (ללא ספק)' : 'שונות (ללא חנות)';
+    const storeName = storeObj ? storeObj.name : fallbackName;
     if (!acc[storeName]) acc[storeName] = [];
     acc[storeName].push(p);
     return acc;
@@ -104,7 +108,7 @@ const ShoppingList = () => {
   const totalEstimatedCost = toBuyList.reduce((sum, p) => sum + ((p.targetQuantity - p.currentQuantity) * (p.price || 0)), 0);
 
   const exportCSV = () => {
-    const headers = ['שם מוצר', 'כמות חסרה', 'מחיר יחידה משוער', 'חנות'];
+    const headers = ['שם מוצר', 'כמות חסרה', 'מחיר יחידה משוער', isBusiness ? 'ספק' : 'חנות'];
     const rows = toBuyList.map(p => {
       const storeName = stores.find(s => s.id === p.storeId)?.name || 'שונות';
       return [p.name, p.targetQuantity - p.currentQuantity, p.price || 0, storeName].join(',');

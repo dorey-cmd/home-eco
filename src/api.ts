@@ -1,103 +1,4 @@
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'http://localhost:3001',
-});
-
-const currentHost = window.location.hostname;
-if (currentHost !== 'localhost') {
-  api.defaults.baseURL = `http://${currentHost}:3001`;
-}
-
-// VERCEL MOCK LOGIC FOR CONCEPT TESTING
-export const isVercel = currentHost.includes('vercel.app');
-
-const generateId = () => Math.random().toString(36).substring(2, 11);
-
-const getLocal = (key: string) => JSON.parse(localStorage.getItem(key) || '[]');
-const setLocal = (key: string, arr: any[]) => localStorage.setItem(key, JSON.stringify(arr));
-
-if (isVercel) {
-  const VERCEL_DB_VERSION = 'v1.1';
-  if (localStorage.getItem('vercel_db_version') !== VERCEL_DB_VERSION) {
-    localStorage.clear();
-    localStorage.setItem('vercel_db_version', VERCEL_DB_VERSION);
-  }
-
-  const initCategories = [
-    { id: '1', name: 'מוצרי חלב', order: 1 },
-    { id: '2', name: 'פירות וירקות', order: 2 },
-    { id: '3', name: 'ניקיון וטואלטיקה', order: 3 },
-    { id: '4', name: 'יבשים', order: 4 },
-  ];
-  const initLocations = [
-    { id: '1', name: 'מקרר', order: 1 },
-    { id: '2', name: 'מזווה', order: 2 },
-    { id: '3', name: 'ארון חומרי ניקוי', order: 3 },
-  ];
-  const initStores = [
-    { id: '1', name: 'שופרסל', order: 1 },
-    { id: '2', name: 'רמי לוי', order: 2 },
-    { id: '3', name: 'ירקניה', order: 3 },
-  ];
-  const initProductsNameList = [
-    { n: 'חלב 3%', c: '1', l: '1', s: '1', price: 6, img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=150' },
-    { n: 'גבינה צהובה העמק', c: '1', l: '1', s: '1', price: 15, img: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=150' },
-    { n: 'קוטג 5%', c: '1', l: '1', s: '2', price: 5, img: '' },
-    { n: 'מעדן שוקולד יוטבתה', c: '1', l: '1', s: '1', price: 4, img: '' },
-    { n: 'ביצים M', c: '1', l: '1', s: '2', price: 12, img: 'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=150' },
-    { n: 'עגבניות', c: '2', l: '1', s: '3', price: 8, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=150' },
-    { n: 'מלפפונים', c: '2', l: '1', s: '3', price: 7, img: 'https://images.unsplash.com/photo-1449339854873-750e6913301b?w=150' },
-    { n: 'בצל יבש', c: '2', l: '2', s: '3', price: 5, img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=150' },
-    { n: 'אבוקדו', c: '2', l: '1', s: '3', price: 15, img: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=150' },
-    { n: 'תפוחי עץ', c: '2', l: '1', s: '3', price: 10, img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6faa6?w=150' },
-    { n: 'סבון כלים פיירי', c: '3', l: '3', s: '1', price: 12, img: '' },
-    { n: 'מרכך כביסה סוד', c: '3', l: '3', s: '2', price: 20, img: '' },
-    { n: 'נייר טואלט', c: '3', l: '3', s: '1', price: 35, img: '' },
-    { n: 'מגבונים לחים', c: '3', l: '3', s: '2', price: 15, img: '' },
-    { n: 'אורז בסמטי סוגת', c: '4', l: '2', s: '2', price: 11, img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=150' },
-    { n: 'פתיתים', c: '4', l: '2', s: '1', price: 8, img: '' },
-    { n: 'פסטה ברילה', c: '4', l: '2', s: '2', price: 10, img: '' },
-    { n: 'שמן קנולה', c: '4', l: '2', s: '1', price: 12, img: '' },
-    { n: 'רסק עגבניות', c: '4', l: '2', s: '2', price: 5, img: '' },
-    { n: 'טונה בשמן', c: '4', l: '2', s: '1', price: 25, img: '' },
-  ];
-  const initProducts = initProductsNameList.map(p => ({
-    id: generateId(), name: p.n, categoryId: p.c, locationId: p.l, storeId: p.s, price: p.price,
-    targetQuantity: Math.floor(Math.random() * 3) + 1, currentQuantity: 0, sku: "", image: p.img, purchaseUrl: "", timestamp: Date.now()
-  }));
-
-  if (!localStorage.getItem('categories')) setLocal('categories', initCategories);
-  if (!localStorage.getItem('stores')) setLocal('stores', initStores);
-  if (!localStorage.getItem('locations')) setLocal('locations', initLocations);
-  if (!localStorage.getItem('products')) setLocal('products', initProducts);
-  if (!localStorage.getItem('purchases')) setLocal('purchases', []);
-}
-
-// HELPER FOR MOCKING HTTP VERBS
-const mockGet = async (key: string) => getLocal(key);
-const mockPost = async (key: string, data: any) => {
-  const arr = getLocal(key);
-  const newItem = { id: generateId(), ...data };
-  arr.push(newItem);
-  setLocal(key, arr);
-  return newItem;
-};
-const mockPatch = async (key: string, id: string, data: any) => {
-  const arr = getLocal(key);
-  const idx = arr.findIndex((item: any) => item.id === String(id));
-  if (idx !== -1) {
-    arr[idx] = { ...arr[idx], ...data };
-    setLocal(key, arr);
-    return arr[idx];
-  }
-  throw new Error('Not found');
-};
-const mockDelete = async (key: string, id: string) => {
-  const arr = getLocal(key);
-  setLocal(key, arr.filter((item: any) => item.id !== String(id)));
-  return {};
-};
+import { supabase } from './supabase';
 
 // INTERFACES
 export interface Product { id: string; name: string; targetQuantity: number; currentQuantity: number; locationId: string; categoryId: string; storeId: string; sku: string; image: string; purchaseUrl: string; price?: number; timestamp: number; }
@@ -106,32 +7,167 @@ export interface Location { id: string; name: string; order?: number; }
 export interface Store { id: string; name: string; order?: number; }
 export interface Purchase { id: string; productId: string; storeId: string; quantityBought: number; pricePerItem: number; timestamp: number; }
 
+// HELPERS
+const getWorkspaceId = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthenticated user");
+    const { data, error } = await supabase.from('workspaces').select('id').eq('owner_id', user.id).single();
+    if (error || !data) throw new Error("No workspace found");
+    return data.id;
+};
+
+// Utilities to convert between JS camelCase and Postgres snake_case
+const toSnake = (obj: any) => {
+    const res: any = { ...obj };
+    if (res.targetQuantity !== undefined) { res.target_quantity = res.targetQuantity; delete res.targetQuantity; }
+    if (res.currentQuantity !== undefined) { res.current_quantity = res.currentQuantity; delete res.currentQuantity; }
+    if (res.categoryId !== undefined) { res.category_id = res.categoryId; delete res.categoryId; }
+    if (res.locationId !== undefined) { res.location_id = res.locationId; delete res.locationId; }
+    if (res.storeId !== undefined) { res.store_id = res.storeId; delete res.storeId; }
+    if (res.purchaseUrl !== undefined) { res.purchase_url = res.purchaseUrl; delete res.purchaseUrl; }
+    if (res.quantityBought !== undefined) { res.quantity_bought = res.quantityBought; delete res.quantityBought; }
+    if (res.pricePerItem !== undefined) { res.price_per_item = res.pricePerItem; delete res.pricePerItem; }
+    return res;
+};
+
+const toCamel = (obj: any) => {
+    const res: any = { ...obj };
+    if (res.target_quantity !== undefined) { res.targetQuantity = res.target_quantity; delete res.target_quantity; }
+    if (res.current_quantity !== undefined) { res.currentQuantity = res.current_quantity; delete res.current_quantity; }
+    if (res.category_id !== undefined) { res.categoryId = res.category_id; delete res.category_id; }
+    if (res.location_id !== undefined) { res.locationId = res.location_id; delete res.location_id; }
+    if (res.store_id !== undefined) { res.storeId = res.store_id; delete res.store_id; }
+    if (res.purchase_url !== undefined) { res.purchaseUrl = res.purchase_url; delete res.purchase_url; }
+    if (res.quantity_bought !== undefined) { res.quantityBought = res.quantity_bought; delete res.quantity_bought; }
+    if (res.price_per_item !== undefined) { res.pricePerItem = res.price_per_item; delete res.price_per_item; }
+    return res;
+};
+
 const sortByOrder = (arr: any[]) => arr.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-// PRODUCTS
-export const fetchProducts = (): Promise<Product[]> => isVercel ? mockGet('products') : api.get<Product[]>('/products').then(res => res.data);
-export const addProduct = (p: Omit<Product, 'id'>): Promise<Product> => isVercel ? mockPost('products', p) : api.post<Product>('/products', p).then(res => res.data);
-export const updateProduct = (id: string, p: Partial<Product>): Promise<Product> => isVercel ? mockPatch('products', id, p) : api.patch<Product>(`/products/${id}`, p).then(res => res.data);
-export const deleteProduct = (id: string): Promise<any> => isVercel ? mockDelete('products', id) : api.delete(`/products/${id}`);
+// --- PRODUCTS ---
+export const fetchProducts = async (): Promise<Product[]> => {
+    const { data, error } = await supabase.from('products').select('*');
+    if (error) throw error;
+    return (data || []).map(toCamel) as Product[];
+};
 
-// PURCHASES
-export const fetchPurchases = (): Promise<Purchase[]> => isVercel ? mockGet('purchases') : api.get<Purchase[]>('/purchases').then(res => res.data);
-export const addPurchase = (p: Omit<Purchase, 'id'>): Promise<Purchase> => isVercel ? mockPost('purchases', p) : api.post<Purchase>('/purchases', p).then(res => res.data);
+export const addProduct = async (p: Omit<Product, 'id'>): Promise<Product> => {
+    const workspace_id = await getWorkspaceId();
+    const payload = toSnake({ ...p, workspace_id });
+    const { data, error } = await supabase.from('products').insert(payload).select().single();
+    if (error) throw error;
+    return toCamel(data) as Product;
+};
 
-// CATEGORIES
-export const fetchCategories = (): Promise<Category[]> => (isVercel ? mockGet('categories') : api.get<Category[]>('/categories').then(res => res.data)).then(sortByOrder);
-export const addCategory = (c: Partial<Category>): Promise<Category> => isVercel ? mockPost('categories', c) : api.post<Category>('/categories', c).then(res => res.data);
-export const updateCategory = (id: string, p: Partial<Category>): Promise<Category> => isVercel ? mockPatch('categories', id, p) : api.patch<Category>(`/categories/${id}`, p).then(res => res.data);
-export const deleteCategory = (id: string): Promise<any> => isVercel ? mockDelete('categories', id) : api.delete(`/categories/${id}`);
+export const updateProduct = async (id: string, p: Partial<Product>): Promise<Product> => {
+    const payload = toSnake(p);
+    const { data, error } = await supabase.from('products').update(payload).eq('id', id).select().single();
+    if (error) throw error;
+    return toCamel(data) as Product;
+};
 
-// LOCATIONS
-export const fetchLocations = (): Promise<Location[]> => (isVercel ? mockGet('locations') : api.get<Location[]>('/locations').then(res => res.data)).then(sortByOrder);
-export const addLocation = (c: Partial<Location>): Promise<Location> => isVercel ? mockPost('locations', c) : api.post<Location>('/locations', c).then(res => res.data);
-export const updateLocation = (id: string, p: Partial<Location>): Promise<Location> => isVercel ? mockPatch('locations', id, p) : api.patch<Location>(`/locations/${id}`, p).then(res => res.data);
-export const deleteLocation = (id: string): Promise<any> => isVercel ? mockDelete('locations', id) : api.delete(`/locations/${id}`);
+export const deleteProduct = async (id: string): Promise<any> => {
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if (error) throw error;
+    return {};
+};
 
-// STORES
-export const fetchStores = (): Promise<Store[]> => (isVercel ? mockGet('stores') : api.get<Store[]>('/stores').then(res => res.data)).then(sortByOrder);
-export const addStore = (c: Partial<Store>): Promise<Store> => isVercel ? mockPost('stores', c) : api.post<Store>('/stores', c).then(res => res.data);
-export const updateStore = (id: string, p: Partial<Store>): Promise<Store> => isVercel ? mockPatch('stores', id, p) : api.patch<Store>(`/stores/${id}`, p).then(res => res.data);
-export const deleteStore = (id: string): Promise<any> => isVercel ? mockDelete('stores', id) : api.delete(`/stores/${id}`);
+// --- PURCHASES ---
+export const fetchPurchases = async (): Promise<Purchase[]> => {
+    const { data, error } = await supabase.from('purchases').select('*');
+    if (error) throw error;
+    return (data || []).map(toCamel) as Purchase[];
+};
+
+export const addPurchase = async (p: Omit<Purchase, 'id'>): Promise<Purchase> => {
+    const workspace_id = await getWorkspaceId();
+    const payload = toSnake({ ...p, workspace_id });
+    const { data, error } = await supabase.from('purchases').insert(payload).select().single();
+    if (error) throw error;
+    return toCamel(data) as Purchase;
+};
+
+// --- CATEGORIES ---
+export const fetchCategories = async (): Promise<Category[]> => {
+    const { data, error } = await supabase.from('categories').select('*');
+    if (error) throw error;
+    return sortByOrder((data || []).map(toCamel));
+};
+
+export const addCategory = async (c: Partial<Category>): Promise<Category> => {
+    const workspace_id = await getWorkspaceId();
+    const payload = toSnake({ ...c, workspace_id });
+    const { data, error } = await supabase.from('categories').insert(payload).select().single();
+    if (error) throw error;
+    return toCamel(data) as Category;
+};
+
+export const updateCategory = async (id: string, p: Partial<Category>): Promise<Category> => {
+    const payload = toSnake(p);
+    const { data, error } = await supabase.from('categories').update(payload).eq('id', id).select().single();
+    if (error) throw error;
+    return toCamel(data) as Category;
+};
+
+export const deleteCategory = async (id: string): Promise<any> => {
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) throw error;
+    return {};
+};
+
+// --- LOCATIONS ---
+export const fetchLocations = async (): Promise<Location[]> => {
+    const { data, error } = await supabase.from('locations').select('*');
+    if (error) throw error;
+    return sortByOrder((data || []).map(toCamel));
+};
+
+export const addLocation = async (c: Partial<Location>): Promise<Location> => {
+    const workspace_id = await getWorkspaceId();
+    const payload = toSnake({ ...c, workspace_id });
+    const { data, error } = await supabase.from('locations').insert(payload).select().single();
+    if (error) throw error;
+    return toCamel(data) as Location;
+};
+
+export const updateLocation = async (id: string, p: Partial<Location>): Promise<Location> => {
+    const payload = toSnake(p);
+    const { data, error } = await supabase.from('locations').update(payload).eq('id', id).select().single();
+    if (error) throw error;
+    return toCamel(data) as Location;
+};
+
+export const deleteLocation = async (id: string): Promise<any> => {
+    const { error } = await supabase.from('locations').delete().eq('id', id);
+    if (error) throw error;
+    return {};
+};
+
+// --- STORES ---
+export const fetchStores = async (): Promise<Store[]> => {
+    const { data, error } = await supabase.from('stores').select('*');
+    if (error) throw error;
+    return sortByOrder((data || []).map(toCamel));
+};
+
+export const addStore = async (c: Partial<Store>): Promise<Store> => {
+    const workspace_id = await getWorkspaceId();
+    const payload = toSnake({ ...c, workspace_id });
+    const { data, error } = await supabase.from('stores').insert(payload).select().single();
+    if (error) throw error;
+    return toCamel(data) as Store;
+};
+
+export const updateStore = async (id: string, p: Partial<Store>): Promise<Store> => {
+    const payload = toSnake(p);
+    const { data, error } = await supabase.from('stores').update(payload).eq('id', id).select().single();
+    if (error) throw error;
+    return toCamel(data) as Store;
+};
+
+export const deleteStore = async (id: string): Promise<any> => {
+    const { error } = await supabase.from('stores').delete().eq('id', id);
+    if (error) throw error;
+    return {};
+};

@@ -5,11 +5,14 @@ import { Camera, Barcode, Save, Trash2, X } from 'lucide-react';
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../api';
 import type { Product } from '../api';
 import { AppContext } from '../App';
+import { useAuth } from '../context/AuthContext';
 
 const AddEditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { categories, locations, stores } = useContext(AppContext);
+  const { profile } = useAuth();
+  const isBusiness = profile?.role === 'BUSINESS';
   
   const [formData, setFormData] = useState<Partial<Product>>({
     name: '',
@@ -180,7 +183,7 @@ const AddEditProduct = () => {
            </div>
            <div style={{ flex: 1 }}>
               <select className="glass-input" style={{ fontSize: '0.9rem', padding: '10px' }} value={formData.locationId} onChange={e => setFormData({...formData, locationId: e.target.value})}>
-                <option value="" disabled>מיקום אחסון</option>
+                <option value="" disabled>{isBusiness ? 'סניף אחסון' : 'מיקום אחסון'}</option>
                 {locations.map(l => <option key={l.id} value={l.id} style={{color: '#000'}}>{l.name}</option>)}
               </select>
            </div>
@@ -189,7 +192,7 @@ const AddEditProduct = () => {
         <div className="flex gap-2">
            <div style={{ flex: '1.3' }}>
              <select className="glass-input" style={{ fontSize: '0.9rem', padding: '10px' }} value={formData.storeId} onChange={e => setFormData({...formData, storeId: e.target.value})}>
-                <option value="" disabled>קונים ב...</option>
+                <option value="" disabled>{isBusiness ? 'מסופק על ידי...' : 'קונים ב...'}</option>
                 {stores.map(s => <option key={s.id} value={s.id} style={{color: '#000'}}>{s.name}</option>)}
              </select>
            </div>

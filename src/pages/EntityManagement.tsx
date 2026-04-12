@@ -1,16 +1,11 @@
 import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
+import { useAuth } from '../context/AuthContext';
 import { Trash2, Plus, ArrowUp, ArrowDown, ChevronRight, Edit2 } from 'lucide-react';
 import { fetchCategories, fetchLocations, fetchStores, addCategory, addLocation, addStore, updateCategory, updateLocation, updateStore, deleteCategory, deleteLocation, deleteStore } from '../api';
 
 type EntityType = 'categories' | 'locations' | 'stores';
-
-const titles: Record<EntityType, string> = {
-  categories: 'ניהול קטגוריות',
-  locations: 'ניהול מיקומים',
-  stores: 'ניהול חנויות'
-};
 
 const apiMap = {
   categories: { fetch: fetchCategories, add: addCategory, update: updateCategory, delete: deleteCategory },
@@ -21,8 +16,16 @@ const apiMap = {
 const EntityManagement = () => {
   const { type } = useParams<{ type: EntityType }>();
   const { refreshLookups } = useContext(AppContext);
+  const { profile } = useAuth();
   const navigate = useNavigate();
   
+  const isBusiness = profile?.role === 'BUSINESS';
+  const titles: Record<EntityType, string> = {
+    categories: 'ניהול קטגוריות',
+    locations: isBusiness ? 'ניהול סניפים' : 'ניהול מיקומים',
+    stores: isBusiness ? 'ניהול ספקים' : 'ניהול חנויות'
+  };
+
   const [items, setItems] = useState<any[]>([]);
   const [newItemName, setNewItemName] = useState('');
 
