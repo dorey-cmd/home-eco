@@ -19,6 +19,8 @@ const getWorkspaceId = async () => {
 // Utilities to convert between JS camelCase and Postgres snake_case
 const toSnake = (obj: any) => {
     const res: any = { ...obj };
+    
+    // Convert keys
     if (res.targetQuantity !== undefined) { res.target_quantity = res.targetQuantity; delete res.targetQuantity; }
     if (res.currentQuantity !== undefined) { res.current_quantity = res.currentQuantity; delete res.currentQuantity; }
     if (res.categoryId !== undefined) { res.category_id = res.categoryId; delete res.categoryId; }
@@ -27,6 +29,12 @@ const toSnake = (obj: any) => {
     if (res.purchaseUrl !== undefined) { res.purchase_url = res.purchaseUrl; delete res.purchaseUrl; }
     if (res.quantityBought !== undefined) { res.quantity_bought = res.quantityBought; delete res.quantityBought; }
     if (res.pricePerItem !== undefined) { res.price_per_item = res.pricePerItem; delete res.pricePerItem; }
+
+    // Sanitize Empty UUIDs to avoid Postgres crashing (invalid input syntax for type uuid)
+    if (res.category_id === '') delete res.category_id;
+    if (res.location_id === '') delete res.location_id;
+    if (res.store_id === '') delete res.store_id;
+
     return res;
 };
 
