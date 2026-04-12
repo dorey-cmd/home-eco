@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Layers, MapPin, Store, ChevronLeft } from 'lucide-react';
+import { Layers, MapPin, Store, ChevronLeft, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AppSettings = () => {
@@ -38,6 +38,13 @@ const AppSettings = () => {
       <ActionButton icon={Layers} title="ניהול קטגוריות" description="מוצרי חלב, בשר, פירות וירקות, יבשים..." path="/settings/categories" />
       <ActionButton icon={Store} title={isBusiness ? "ניהול ספקים" : "ניהול חנויות קנייה"} description={isBusiness ? "עריכת הספקים הקבועים שלך" : "שופרסל, רמי לוי, ירקניה מקומית..."} path="/settings/stores" />
       <ActionButton icon={MapPin} title={isBusiness ? "ניהול סניפים ומתחמים" : "ניהול מיקומי אחסון"} description={isBusiness ? "הגדרת רשימות לפי סניפי הרשת" : "מקרר, מזווה, ארון חומרי הניקוי..."} path="/settings/locations" />
+
+      {profile?.role === 'ADMIN' && (
+        <div className="mt-8 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+          <h2 className="text-secondary mb-2" style={{ fontSize: '0.9rem' }}>ניהול מערכת מיוחד</h2>
+          <ActionButton icon={ShieldAlert} title="לוח בקרה ראשי (Admin)" description="צפייה במשתמשים, חיפוש הרשמות וניהול גלובלי" path="/admin" />
+        </div>
+      )}
 
     </div>
   );

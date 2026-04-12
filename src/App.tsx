@@ -8,6 +8,7 @@ import AddEditProduct from './pages/AddEditProduct';
 import AppSettings from './pages/AppSettings';
 import Reports from './pages/Reports';
 import EntityManagement from './pages/EntityManagement';
+import AdminDashboard from './pages/AdminDashboard';
 import { fetchCategories, fetchLocations, fetchStores } from './api';
 import type { Category, Location, Store } from './api';
 
@@ -102,6 +103,7 @@ function AppContent() {
             <Route path="/add" element={<AddEditProduct />} />
             <Route path="/edit/:id" element={<AddEditProduct />} />
             <Route path="/settings" element={<AppSettings />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/settings/:type" element={<EntityManagement />} />
             <Route path="/reports" element={<Reports />} />
           </Routes>
