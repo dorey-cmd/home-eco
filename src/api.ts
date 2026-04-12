@@ -18,6 +18,12 @@ const getLocal = (key: string) => JSON.parse(localStorage.getItem(key) || '[]');
 const setLocal = (key: string, arr: any[]) => localStorage.setItem(key, JSON.stringify(arr));
 
 if (isVercel) {
+  const VERCEL_DB_VERSION = 'v1.1';
+  if (localStorage.getItem('vercel_db_version') !== VERCEL_DB_VERSION) {
+    localStorage.clear();
+    localStorage.setItem('vercel_db_version', VERCEL_DB_VERSION);
+  }
+
   const initCategories = [
     { id: '1', name: 'מוצרי חלב', order: 1 },
     { id: '2', name: 'פירות וירקות', order: 2 },
@@ -35,30 +41,30 @@ if (isVercel) {
     { id: '3', name: 'ירקניה', order: 3 },
   ];
   const initProductsNameList = [
-    { n: 'חלב 3%', c: '1', l: '1', s: '1', price: 6 },
-    { n: 'גבינה צהובה העמק', c: '1', l: '1', s: '1', price: 15 },
-    { n: 'קוטג 5%', c: '1', l: '1', s: '2', price: 5 },
-    { n: 'מעדן שוקולד יוטבתה', c: '1', l: '1', s: '1', price: 4 },
-    { n: 'ביצים M', c: '1', l: '1', s: '2', price: 12 },
-    { n: 'עגבניות', c: '2', l: '1', s: '3', price: 8 },
-    { n: 'מלפפונים', c: '2', l: '1', s: '3', price: 7 },
-    { n: 'בצל יבש', c: '2', l: '2', s: '3', price: 5 },
-    { n: 'אבוקדו', c: '2', l: '1', s: '3', price: 15 },
-    { n: 'תפוחי עץ', c: '2', l: '1', s: '3', price: 10 },
-    { n: 'סבון כלים פיירי', c: '3', l: '3', s: '1', price: 12 },
-    { n: 'מרכך כביסה סוד', c: '3', l: '3', s: '2', price: 20 },
-    { n: 'נייר טואלט', c: '3', l: '3', s: '1', price: 35 },
-    { n: 'מגבונים לחים', c: '3', l: '3', s: '2', price: 15 },
-    { n: 'אורז בסמטי סוגת', c: '4', l: '2', s: '2', price: 11 },
-    { n: 'פתיתים', c: '4', l: '2', s: '1', price: 8 },
-    { n: 'פסטה ברילה', c: '4', l: '2', s: '2', price: 10 },
-    { n: 'שמן קנולה', c: '4', l: '2', s: '1', price: 12 },
-    { n: 'רסק עגבניות', c: '4', l: '2', s: '2', price: 5 },
-    { n: 'טונה בשמן', c: '4', l: '2', s: '1', price: 25 },
+    { n: 'חלב 3%', c: '1', l: '1', s: '1', price: 6, img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=150' },
+    { n: 'גבינה צהובה העמק', c: '1', l: '1', s: '1', price: 15, img: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=150' },
+    { n: 'קוטג 5%', c: '1', l: '1', s: '2', price: 5, img: '' },
+    { n: 'מעדן שוקולד יוטבתה', c: '1', l: '1', s: '1', price: 4, img: '' },
+    { n: 'ביצים M', c: '1', l: '1', s: '2', price: 12, img: 'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=150' },
+    { n: 'עגבניות', c: '2', l: '1', s: '3', price: 8, img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=150' },
+    { n: 'מלפפונים', c: '2', l: '1', s: '3', price: 7, img: 'https://images.unsplash.com/photo-1449339854873-750e6913301b?w=150' },
+    { n: 'בצל יבש', c: '2', l: '2', s: '3', price: 5, img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=150' },
+    { n: 'אבוקדו', c: '2', l: '1', s: '3', price: 15, img: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=150' },
+    { n: 'תפוחי עץ', c: '2', l: '1', s: '3', price: 10, img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6faa6?w=150' },
+    { n: 'סבון כלים פיירי', c: '3', l: '3', s: '1', price: 12, img: '' },
+    { n: 'מרכך כביסה סוד', c: '3', l: '3', s: '2', price: 20, img: '' },
+    { n: 'נייר טואלט', c: '3', l: '3', s: '1', price: 35, img: '' },
+    { n: 'מגבונים לחים', c: '3', l: '3', s: '2', price: 15, img: '' },
+    { n: 'אורז בסמטי סוגת', c: '4', l: '2', s: '2', price: 11, img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=150' },
+    { n: 'פתיתים', c: '4', l: '2', s: '1', price: 8, img: '' },
+    { n: 'פסטה ברילה', c: '4', l: '2', s: '2', price: 10, img: '' },
+    { n: 'שמן קנולה', c: '4', l: '2', s: '1', price: 12, img: '' },
+    { n: 'רסק עגבניות', c: '4', l: '2', s: '2', price: 5, img: '' },
+    { n: 'טונה בשמן', c: '4', l: '2', s: '1', price: 25, img: '' },
   ];
   const initProducts = initProductsNameList.map(p => ({
     id: generateId(), name: p.n, categoryId: p.c, locationId: p.l, storeId: p.s, price: p.price,
-    targetQuantity: Math.floor(Math.random() * 3) + 1, currentQuantity: 0, sku: "", image: "", purchaseUrl: "", timestamp: Date.now()
+    targetQuantity: Math.floor(Math.random() * 3) + 1, currentQuantity: 0, sku: "", image: p.img, purchaseUrl: "", timestamp: Date.now()
   }));
 
   if (!localStorage.getItem('categories')) setLocal('categories', initCategories);

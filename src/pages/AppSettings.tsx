@@ -6,18 +6,20 @@ const AppSettings = () => {
 
   const ActionButton = ({ icon: Icon, title, description, path }: { icon: any, title: string, description: string, path: string }) => (
     <button 
-      className="glass-panel list-row" 
-      style={{ padding: '20px 16px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', cursor: 'pointer', width: '100%', marginBottom: '16px', transition: 'transform 0.2s ease', position: 'relative', overflow: 'hidden' }}
+      className="glass-panel list-row flex items-center justify-between" 
+      style={{ padding: '12px 16px', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)', cursor: 'pointer', width: '100%', marginBottom: '12px', transition: 'all 0.2s ease', borderRadius: '12px' }}
       onClick={() => navigate(path)}
     >
-      <div className="flex items-center justify-center" style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'var(--accent-glow)' }}>
-        <Icon size={24} className="text-accent" />
+      <div className="flex items-center gap-4 text-right flex-1">
+        <div className="flex items-center justify-center flex-shrink-0" style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.15)' }}>
+          <Icon size={22} style={{ color: '#fff' }} />
+        </div>
+        <div>
+          <h2 className="font-bold m-0" style={{ fontSize: '1.1rem', color: '#fff' }}>{title}</h2>
+          <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)' }}>{description}</div>
+        </div>
       </div>
-      <div style={{ flex: 1, textAlign: 'right', marginRight: '16px' }}>
-        <h2 className="font-bold m-0" style={{ fontSize: '1.2rem' }}>{title}</h2>
-        <div className="text-secondary mt-1" style={{ fontSize: '0.85rem' }}>{description}</div>
-      </div>
-      <ChevronLeft size={24} className="text-secondary" style={{ opacity: 0.5 }} />
+      <ChevronLeft size={20} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
     </button>
   );
 
