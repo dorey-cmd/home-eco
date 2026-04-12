@@ -8,10 +8,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isBusiness, setIsBusiness] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<{ text: string, type: 'error' | 'success' | 'info' } | null>(null);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setMsg(null);
 
     try {
       if (isSignUp) {
@@ -27,7 +29,13 @@ const Login = () => {
           await supabase.from('profiles').update({ role: 'BUSINESS' }).eq('id', data.user.id);
         }
 
-        alert('הרשמה בוצעה בהצלחה! אנא התחבר.');
+        // Check if email confirmation is required
+        if (data.user?.identities?.length === 0 || !data.session) {
+            setMsg({ text: 'הרשמה בוצעה בהצלחה! שלחנו לך הודעת אימות למייל. לחץ עליה כדי להיכנס.', type: 'info' });
+        } else {
+            setMsg({ text: 'הרשמה יוקרתית בוצעה בהצלחה! ברוך הבא.', type: 'success' });
+        }
+
         setIsSignUp(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -38,7 +46,12 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error('Auth error', error.message);
-      alert('שגיאה: ' + error.message);
+      
+      let errorText = error.message;
+      if (error.message.includes('Invalid login credentials')) errorText = 'פרטי התחברות שגויים או שטרם אישרת את המייל.';
+      if (error.message.includes('User already registered')) errorText = 'האימייל הזה כבר תפסנו!';
+      
+      setMsg({ text: errorText, type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -50,6 +63,16 @@ const Login = () => {
         <h1 className="text-2xl font-bold text-center mb-6 text-accent">
           {isSignUp ? 'יצירת חשבון' : 'התחברות למערכת'}
         </h1>
+
+        {msg && (
+          <div className={`mb-4 p-3 rounded-lg text-sm text-center font-bold ${
+            msg.type === 'error' ? 'bg-danger text-white' : 
+            msg.type === 'success' ? 'bg-success text-white' : 
+            'bg-accent text-white'
+          }`} style={{ animation: 'fadeIn 0.3s ease' }}>
+            {msg.text}
+          </div>
+        )}
 
         <form onSubmit={handleAuth} className="flex flex-col gap-4">
           <div>
