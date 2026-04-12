@@ -23,7 +23,7 @@ const Reports = () => {
       fetchProducts()
     ]);
     // Sort purchases by newest first
-    setPurchases((purchasesData || []).sort((a,b) => b.timestamp - a.timestamp));
+    setPurchases((purchasesData || []).sort((a: Purchase,b: Purchase) => b.timestamp - a.timestamp));
     setProducts(productsData || []);
   };
 

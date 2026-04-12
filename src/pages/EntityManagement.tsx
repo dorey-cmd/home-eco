@@ -1,11 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { AppContext } from '../App';
 import { Trash2, Plus, ArrowUp, ArrowDown, ChevronRight, Edit2 } from 'lucide-react';
-
-const currentHost = window.location.hostname;
-const baseURL = currentHost !== 'localhost' ? `http://${currentHost}:3001` : 'http://localhost:3001';
+import { fetchCategories, fetchLocations, fetchStores, addCategory, addLocation, addStore, updateCategory, updateLocation, updateStore, deleteCategory, deleteLocation, deleteStore } from '../api';
 
 type EntityType = 'categories' | 'locations' | 'stores';
 
@@ -13,6 +10,12 @@ const titles: Record<EntityType, string> = {
   categories: 'ניהול קטגוריות',
   locations: 'ניהול מיקומים',
   stores: 'ניהול חנויות'
+};
+
+const apiMap = {
+  categories: { fetch: fetchCategories, add: addCategory, update: updateCategory, delete: deleteCategory },
+  locations: { fetch: fetchLocations, add: addLocation, update: updateLocation, delete: deleteLocation },
+  stores: { fetch: fetchStores, add: addStore, update: updateStore, delete: deleteStore }
 };
 
 const EntityManagement = () => {
@@ -23,27 +26,25 @@ const EntityManagement = () => {
   const [items, setItems] = useState<any[]>([]);
   const [newItemName, setNewItemName] = useState('');
 
-  // We fetch locally inside this component so we can manage ordering aggressively
   useEffect(() => {
     if (type) loadItems();
   }, [type]);
 
   const loadItems = async () => {
-    if (!type) return;
+    if (!type || !apiMap[type]) return;
     try {
-      const res = await axios.get(`${baseURL}/${type}`);
-      const sorted = res.data.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-      setItems(sorted);
+      const data = await apiMap[type].fetch();
+      setItems(data); // fetch returns sorted already!
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleAdd = async () => {
-    if (!newItemName.trim() || !type) return;
+    if (!newItemName.trim() || !type || !apiMap[type]) return;
     try {
       const maxOrder = items.length > 0 ? Math.max(...items.map(i => i.order || 0)) : 0;
-      await axios.post(`${baseURL}/${type}`, { name: newItemName, order: maxOrder + 1 });
+      await apiMap[type].add({ name: newItemName, order: maxOrder + 1 });
       setNewItemName('');
       await loadItems();
       refreshLookups();
@@ -53,10 +54,10 @@ const EntityManagement = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!type) return;
+    if (!type || !apiMap[type]) return;
     if (window.confirm('למחוק פריט זה? הפעולה לא תימחק מוצרים המשויכים אליו, אך עלולה לפגוע בסינון.')) {
       try {
-        await axios.delete(`${baseURL}/${type}/${id}`);
+        await apiMap[type].delete(id);
         await loadItems();
         refreshLookups();
       } catch (e) {
@@ -66,11 +67,11 @@ const EntityManagement = () => {
   };
 
   const handleRename = async (id: string, currentName: string) => {
-    if (!type) return;
+    if (!type || !apiMap[type]) return;
     const newName = window.prompt('הכנס שם חדש:', currentName);
     if (newName && newName.trim() !== '' && newName !== currentName) {
       try {
-        await axios.patch(`${baseURL}/${type}/${id}`, { name: newName });
+        await apiMap[type].update(id, { name: newName });
         await loadItems();
         refreshLookups();
       } catch (e) {
@@ -80,7 +81,7 @@ const EntityManagement = () => {
   };
 
   const handleMove = async (index: number, direction: -1 | 1) => {
-    if (!type) return;
+    if (!type || !apiMap[type]) return;
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= items.length) return;
     
@@ -89,21 +90,19 @@ const EntityManagement = () => {
     newItems[index] = newItems[newIndex];
     newItems[newIndex] = temp;
     
-    // Assign new orders locally to reflect instantly
     newItems.forEach((item, idx) => {
       item.order = idx + 1;
     });
     setItems([...newItems]);
 
     try {
-      // Execute saves in parallel
       await Promise.all(
-        newItems.map(item => axios.patch(`${baseURL}/${type}/${item.id}`, { order: item.order }))
+        newItems.map(item => apiMap[type!].update(item.id, { order: item.order }))
       );
       refreshLookups();
     } catch (e) {
       console.error('Failed to save arrangement', e);
-      loadItems(); // rollback
+      loadItems();
     }
   };
 

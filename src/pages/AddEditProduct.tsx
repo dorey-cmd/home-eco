@@ -35,7 +35,7 @@ const AddEditProduct = () => {
   const loadProduct = async (productId: string) => {
     try {
       const all = await fetchProducts();
-      const p = all.find(x => x.id === productId);
+      const p = all.find((x: Product) => x.id === productId);
       if (p) setFormData(p);
     } catch (e) {
       console.error(e);
