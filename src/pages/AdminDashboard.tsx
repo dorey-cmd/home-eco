@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
-import { ShieldAlert, Users, Building, ChevronRight } from 'lucide-react';
+import { ShieldAlert, Users, Building, ChevronRight, Trash2, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { UserProfile, Workspace } from '../context/AuthContext';
 
@@ -14,6 +14,8 @@ const AdminDashboard = () => {
   const [profiles, setProfiles] = useState<AdminProfile[]>([]);
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [editingRoleFor, setEditingRoleFor] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -43,6 +45,37 @@ const AdminDashboard = () => {
 
   const getWorkspacesCount = (userId: string) => {
     return workspaces.filter(w => w.owner_id === userId).length;
+  };
+
+  const handleAction = async (action: 'deleteUser' | 'changeRole', targetUserId: string, payload?: any) => {
+    const p = profiles.find(pr => pr.id === targetUserId);
+    if (action === 'deleteUser') {
+      if (!window.confirm(`האם אתה בטוח שברצונך למחוק לצמיתות את המשתמש ${p?.email}? פעולה זו תשמיד אותו מהמערכת.`)) return;
+    }
+
+    setActionLoading(targetUserId);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-users', {
+        body: { action, targetUserId, payload }
+      });
+
+      if (error) throw new Error(error.message);
+      if (data.error) throw new Error(data.error);
+
+      if (action === 'deleteUser') {
+        setProfiles(profiles.filter(pr => pr.id !== targetUserId));
+      } else if (action === 'changeRole') {
+        setProfiles(profiles.map(pr => pr.id === targetUserId ? { ...pr, role: payload.role } : pr));
+        setEditingRoleFor(null);
+      }
+      
+      alert(data.message || 'הפעולה בוצעה בהצלחה!');
+    } catch (e: any) {
+      console.error(e);
+      alert('תקלה בביצוע הפעולה: ' + e.message);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   return (
@@ -76,27 +109,60 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <h2 className="mb-4 font-bold text-accent">רשימת משתמשים</h2>
+      <h2 className="mb-4 font-bold text-accent">רשימת משתמשים (ניהול)</h2>
       {loading ? (
-        <div className="text-center p-8">טוען...</div>
+        <div className="text-center p-8">טוען נתונים אבסולוטיים...</div>
       ) : (
         <div className="flex flex-col gap-3">
           {profiles.map(p => (
-            <div key={p.id} className="glass-panel p-4 flex flex-col gap-2">
+            <div key={p.id} className="glass-panel p-4 flex flex-col gap-2 relative">
               <div className="flex justify-between items-start">
                 <div>
                   <div className="font-bold">{p.email || 'משתמש ללא אימייל'}</div>
                   <div className="text-secondary text-xs" style={{ fontFamily: 'monospace' }}>{p.id}</div>
                 </div>
-                <div className={`badge ${p.role === 'ADMIN' ? 'bg-danger' : (p.role === 'BUSINESS' ? 'bg-accent' : 'bg-success')}`} style={{ padding: '4px 8px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                  {p.role}
-                </div>
+                
+                {editingRoleFor === p.id ? (
+                  <div className="flex items-center gap-1">
+                    <select 
+                      className="glass-input p-1 text-sm bg-black" 
+                      defaultValue={p.role}
+                      onChange={(e) => handleAction('changeRole', p.id, { role: e.target.value })}
+                    >
+                      <option value="PRIVATE">PRIVATE</option>
+                      <option value="BUSINESS">BUSINESS</option>
+                      <option value="ADMIN">ADMIN</option>
+                    </select>
+                    <button className="glass-button secondary p-1 text-secondary" onClick={() => setEditingRoleFor(null)}>ביטול</button>
+                  </div>
+                ) : (
+                  <div 
+                    className={`badge ${p.role === 'ADMIN' ? 'bg-danger' : (p.role === 'BUSINESS' ? 'bg-accent' : 'bg-success')}`} 
+                    style={{ padding: '4px 8px', borderRadius: '8px', color: '#fff', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer' }}
+                    onClick={() => setEditingRoleFor(p.id)}
+                    title="לחץ כאן כדי לשנות תפקיד"
+                  >
+                    {p.role} ✏️
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 text-sm text-secondary mt-2">
-                <Building size={16} /> מרחבים פעילים: {getWorkspacesCount(p.id)}
+              <div className="flex items-center justify-between text-sm text-secondary mt-2">
+                <div className="flex items-center gap-2">
+                  <Building size={16} /> מרחבים פעילים: {getWorkspacesCount(p.id)}
+                </div>
+                
+                <button 
+                  className="glass-button secondary p-2 text-danger flex items-center gap-1"
+                  onClick={() => handleAction('deleteUser', p.id)}
+                  disabled={actionLoading === p.id}
+                  title="מחק משתמש לצמיתות מהמערכת"
+                >
+                  {actionLoading === p.id ? <CheckCircle size={16}/> : <Trash2 size={16} />}
+                  <span className="text-xs">השמד</span>
+                </button>
               </div>
               <div className="text-xs text-secondary mt-1">
-                נרשם ב: {new Date(p.created_at).toLocaleDateString('he-IL')} {new Date(p.created_at).toLocaleTimeString('he-IL')}
+                נרשם: {new Date(p.created_at).toLocaleDateString('he-IL')} {new Date(p.created_at).toLocaleTimeString('he-IL')}
               </div>
             </div>
           ))}
