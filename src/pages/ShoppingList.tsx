@@ -2,11 +2,12 @@ import { useEffect, useState, useContext } from 'react';
 import { fetchProducts, updateProduct, addPurchase } from '../api';
 import type { Product } from '../api';
 import { AppContext } from '../App';
-import { ShoppingCart, CheckCircle, ExternalLink, Download, FileText, CheckSquare, Square, Share2 } from 'lucide-react';
+import { ShoppingCart, CheckCircle, ExternalLink, Download, FileText, CheckSquare, Square, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ShoppingList = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [expandedStores, setExpandedStores] = useState<Set<string>>(new Set());
   const { stores } = useContext(AppContext);
 
   useEffect(() => {
@@ -27,6 +28,13 @@ const ShoppingList = () => {
     if (newSelected.has(id)) newSelected.delete(id);
     else newSelected.add(id);
     setSelectedIds(newSelected);
+  };
+
+  const toggleStore = (storeName: string) => {
+    const next = new Set(expandedStores);
+    if (next.has(storeName)) next.delete(storeName);
+    else next.add(storeName);
+    setExpandedStores(next);
   };
 
   const selectAllForStore = (storeProducts: Product[]) => {
@@ -188,77 +196,90 @@ const ShoppingList = () => {
       ) : (
         Object.entries(groupedList).map(([storeName, storeProducts]) => {
           const storeSelectedCount = storeProducts.filter(p => selectedIds.has(p.id)).length;
+          const isExpanded = expandedStores.has(storeName);
           
           return (
             <div key={storeName} className="mb-4">
-              <div className="flex justify-between items-center mb-2" style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: '8px' }}>
-                <div className="flex items-center gap-2">
-                  <h2 className="font-bold" style={{ fontSize: '1.2rem' }}>
-                    {storeName}
-                  </h2>
-                  <button className="glass-button secondary" style={{ padding: '4px' }} onClick={() => shareStore(storeName, storeProducts)}>
-                    <Share2 size={16} />
-                  </button>
+              <div className="glass-panel mb-2" style={{ padding: '12px', cursor: 'pointer' }} onClick={() => toggleStore(storeName)}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    {isExpanded ? <ChevronUp size={24} className="text-secondary" /> : <ChevronDown size={24} className="text-secondary" />}
+                    <h2 className="font-bold m-0" style={{ fontSize: '1.2rem', color: isExpanded ? 'var(--accent-color)' : 'inherit' }}>
+                      {storeName} <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>({storeProducts.length})</span>
+                    </h2>
+                  </div>
+                  {isExpanded && (
+                    <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                      <button className="glass-button secondary" style={{ padding: '6px' }} onClick={() => shareStore(storeName, storeProducts)}>
+                        <Share2 size={18} />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <div className="flex gap-2">
-                  <button 
-                    className="glass-button secondary" 
-                    style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                    onClick={() => selectAllForStore(storeProducts)}
-                  >
-                    {storeSelectedCount === storeProducts.length ? 'בטל הכל' : 'בחר הכל'}
-                  </button>
-                  <button 
-                    className="glass-button" 
-                    style={{ padding: '6px 12px', fontSize: '0.8rem', background: storeSelectedCount > 0 ? 'var(--success-color)' : 'var(--glass-bg)', color: storeSelectedCount > 0 ? 'white' : 'var(--text-secondary)' }}
-                    onClick={() => checkoutStore(storeProducts)}
-                    disabled={storeSelectedCount === 0}
-                  >
-                    <CheckCircle size={16} />
-                    <span>סיום קנייה ({storeSelectedCount})</span>
-                  </button>
-                </div>
+                
+                {isExpanded && (
+                  <div className="flex justify-between mt-3 pt-3" style={{ borderTop: '1px solid var(--glass-border)' }} onClick={e => e.stopPropagation()}>
+                    <button 
+                      className="glass-button secondary" 
+                      style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                      onClick={() => selectAllForStore(storeProducts)}
+                    >
+                      {storeSelectedCount === storeProducts.length ? 'בטל הכל' : 'בחר הכל'}
+                    </button>
+                    <button 
+                      className="glass-button" 
+                      style={{ padding: '6px 12px', fontSize: '0.85rem', background: storeSelectedCount > 0 ? 'var(--success-color)' : 'var(--glass-bg)', color: storeSelectedCount > 0 ? 'white' : 'var(--text-secondary)' }}
+                      onClick={() => checkoutStore(storeProducts)}
+                      disabled={storeSelectedCount === 0}
+                    >
+                      <CheckCircle size={16} className="ml-1" />
+                      <span>סיום קנייה ({storeSelectedCount})</span>
+                    </button>
+                  </div>
+                )}
               </div>
               
-              <div className="flex flex-col gap-2">
-                {storeProducts.map(p => {
-                  const amountNeeded = p.targetQuantity - p.currentQuantity;
-                  const isSelected = selectedIds.has(p.id);
-                  return (
-                    <div 
-                      key={p.id} 
-                      className="glass-panel list-row" 
-                      style={{ cursor: 'pointer', border: isSelected ? '1px solid var(--success-color)' : '1px solid var(--glass-border)', opacity: isSelected ? 0.8 : 1 }}
-                      onClick={() => toggleSelection(p.id)}
-                    >
-                      <div style={{ color: isSelected ? 'var(--success-color)' : 'var(--text-secondary)', display: 'flex' }}>
-                        {isSelected ? <CheckSquare size={20} /> : <Square size={20} />}
-                      </div>
-                      
-                      {p.image ? (
-                        <img src={p.image} alt={p.name} className="tiny-img" />
-                      ) : (
-                        <div className="tiny-placeholder">{p.name.charAt(0)}</div>
-                      )}
-                      
-                      <div style={{ flex: 1, minWidth: 0, padding: '0 4px' }}>
-                        <div className="font-bold truncate" style={{ fontSize: '1rem', color: isSelected ? 'var(--success-color)' : 'inherit' }}>{p.name}</div>
-                      </div>
-                      
-                      <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
-                        {p.purchaseUrl && (
-                          <a href={p.purchaseUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} style={{ color: 'var(--accent-color)' }}>
-                            <ExternalLink size={18} />
-                          </a>
+              {isExpanded && (
+                <div className="flex flex-col gap-2">
+                  {storeProducts.map(p => {
+                    const amountNeeded = p.targetQuantity - p.currentQuantity;
+                    const isSelected = selectedIds.has(p.id);
+                    return (
+                      <div 
+                        key={p.id} 
+                        className="glass-panel list-row" 
+                        style={{ cursor: 'pointer', border: isSelected ? '1px solid var(--success-color)' : '1px solid var(--glass-border)', opacity: isSelected ? 0.8 : 1 }}
+                        onClick={() => toggleSelection(p.id)}
+                      >
+                        <div style={{ color: isSelected ? 'var(--success-color)' : 'var(--text-secondary)', display: 'flex' }}>
+                          {isSelected ? <CheckSquare size={20} /> : <Square size={20} />}
+                        </div>
+                        
+                        {p.image ? (
+                          <img src={p.image} alt={p.name} className="tiny-img" />
+                        ) : (
+                          <div className="tiny-placeholder">{p.name.charAt(0)}</div>
                         )}
-                        <span className="badge font-bold" style={{ background: 'var(--danger-color)', color: 'white', padding: '4px 8px' }}>
-                          חסר: {amountNeeded} {p.price ? `| ₪${p.price}` : ''}
-                        </span>
+                        
+                        <div style={{ flex: 1, minWidth: 0, padding: '0 4px' }}>
+                          <div className="font-bold truncate" style={{ fontSize: '1rem', color: isSelected ? 'var(--success-color)' : 'inherit' }}>{p.name}</div>
+                        </div>
+                        
+                        <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
+                          {p.purchaseUrl && (
+                            <a href={p.purchaseUrl} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} style={{ color: 'var(--accent-color)' }}>
+                              <ExternalLink size={18} />
+                            </a>
+                          )}
+                          <span className="badge font-bold" style={{ background: 'var(--danger-color)', color: 'white', padding: '4px 8px' }}>
+                            חסר: {amountNeeded} {p.price ? `| ₪${p.price}` : ''}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )
         })
