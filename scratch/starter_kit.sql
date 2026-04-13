@@ -30,8 +30,8 @@ DECLARE
   store_spice UUID = gen_random_uuid();
 BEGIN
   -- 1. Create a profile entry
-  INSERT INTO public.profiles (id, email, full_name, role)
-  VALUES (new.id, new.email, new.raw_user_meta_data->>'full_name', COALESCE(new.raw_user_meta_data->>'role', 'PRIVATE'));
+  INSERT INTO public.profiles (id, email, role)
+  VALUES (new.id, new.email, COALESCE(new.raw_user_meta_data->>'role', 'PRIVATE'));
 
   -- 2. Create the default initial workspace
   INSERT INTO public.workspaces (owner_id, name)
