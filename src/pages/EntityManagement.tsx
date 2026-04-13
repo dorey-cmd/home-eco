@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Plus, ArrowUp, ArrowDown, ChevronRight, Edit2 } from 'lucide-react';
+import { Trash2, Plus, ArrowUp, ArrowDown, ChevronRight, Edit2, Image as ImageIcon } from 'lucide-react';
 import { fetchCategories, fetchLocations, fetchStores, addCategory, addLocation, addStore, updateCategory, updateLocation, updateStore, deleteCategory, deleteLocation, deleteStore } from '../api';
 
 type EntityType = 'categories' | 'locations' | 'stores';
@@ -83,6 +83,20 @@ const EntityManagement = () => {
     }
   };
 
+  const handleSetImage = async (id: string, currentImage?: string) => {
+    if (!type || !apiMap[type]) return;
+    const newImage = window.prompt('הדבק כתובת (URL) של תמונה:', currentImage || '');
+    if (newImage !== null && newImage !== currentImage) {
+      try {
+        await apiMap[type].update(id, { image: newImage });
+        await loadItems();
+        refreshLookups();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
   const handleMove = async (index: number, direction: -1 | 1) => {
     if (!type || !apiMap[type]) return;
     const newIndex = index + direction;
@@ -142,11 +156,27 @@ const EntityManagement = () => {
         <div className="flex flex-col gap-2">
           {items.map((item, index) => (
             <div key={item.id} className="glass-panel list-row" style={{ padding: '12px' }}>
+              {item.image ? (
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, marginLeft: '12px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
+                  <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ) : (
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', flexShrink: 0, marginLeft: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px dashed rgba(255,255,255,0.2)' }}>
+                  <ImageIcon size={18} style={{ opacity: 0.3 }} />
+                </div>
+              )}
+              
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span className="font-bold truncate">{item.name}</span>
+                <span className="font-bold truncate" style={{ fontSize: '1rem' }}>{item.name}</span>
               </div>
               
               <div className="flex gap-1 items-center" style={{ flexShrink: 0 }}>
+                <button className="glass-button secondary" style={{ padding: '4px', border: 'none' }} onClick={() => handleSetImage(item.id, item.image)} title="הגדר תמונה">
+                  <ImageIcon size={16} />
+                </button>
+                <button className="glass-button secondary" style={{ padding: '4px', border: 'none' }} onClick={() => handleRename(item.id, item.name)} title="שנה שם">
+                  <Edit2 size={16} />
+                </button>
                 <button className="glass-button secondary" style={{ padding: '4px', border: 'none' }} onClick={() => handleMove(index, -1)} disabled={index === 0}>
                   <ArrowUp size={18} style={{ opacity: index === 0 ? 0.3 : 1 }} />
                 </button>

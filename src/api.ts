@@ -2,9 +2,9 @@ import { supabase } from './supabase';
 
 // INTERFACES
 export interface Product { id: string; name: string; targetQuantity: number; currentQuantity: number; locationId: string; categoryId: string; storeId: string; sku: string; image: string; purchaseUrl: string; price?: number; timestamp: number; }
-export interface Category { id: string; name: string; order?: number; }
-export interface Location { id: string; name: string; order?: number; }
-export interface Store { id: string; name: string; order?: number; }
+export interface Category { id: string; name: string; order?: number; image?: string; }
+export interface Location { id: string; name: string; order?: number; image?: string; }
+export interface Store { id: string; name: string; order?: number; image?: string; }
 export interface Purchase { id: string; productId: string; storeId: string; quantityBought: number; pricePerItem: number; timestamp: number; }
 
 // HELPERS
