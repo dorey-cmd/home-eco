@@ -63,32 +63,32 @@ BEGIN
     (store_spice, new_workspace_id, 'חנות תבלינים', 5);
 
   -- 6. Insert Starter Kit Products (20 common items)
-  INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku, need_to_buy) VALUES
-    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', false),
-    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', false),
-    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', false),
-    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', false),
+  INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku) VALUES
+    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, ''),
+    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, ''),
+    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, ''),
+    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, ''),
     
-    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', false),
-    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', false),
-    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', true),
-    (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, '', false),
+    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, ''),
+    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, ''),
+    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, ''),
+    (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, ''),
     
-    (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, '', false),
-    (new_workspace_id, 'גבינה צהובה תנובה', 1, 1, cat_dairy, loc_fridge, store_super, '', false),
-    (new_workspace_id, 'קוטג''', 2, 1, cat_dairy, loc_fridge, store_super, '', false),
-    (new_workspace_id, 'יוגורט טבעי', 4, 4, cat_dairy, loc_fridge, store_super, '', false),
+    (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, ''),
+    (new_workspace_id, 'גבינה צהובה תנובה', 1, 1, cat_dairy, loc_fridge, store_super, ''),
+    (new_workspace_id, 'קוטג''', 2, 1, cat_dairy, loc_fridge, store_super, ''),
+    (new_workspace_id, 'יוגורט טבעי', 4, 4, cat_dairy, loc_fridge, store_super, ''),
 
-    (new_workspace_id, 'יין אדום קברנה', 2, 1, cat_wine, loc_pantry, store_super, '', false),
-    (new_workspace_id, 'יין לבן חצי יבש', 1, 0, cat_wine, loc_fridge, store_super, '', true),
+    (new_workspace_id, 'יין אדום קברנה', 2, 1, cat_wine, loc_pantry, store_super, ''),
+    (new_workspace_id, 'יין לבן חצי יבש', 1, 0, cat_wine, loc_fridge, store_super, ''),
     
-    (new_workspace_id, 'קוקה קולה זירו (שישיה)', 2, 1, cat_drinks, loc_pantry, store_super, '', false),
-    (new_workspace_id, 'מים מינרלים (שישיה)', 3, 1, cat_drinks, loc_pantry, store_super, '', false),
-    (new_workspace_id, 'מיץ תפוזים פריגת', 1, 1, cat_drinks, loc_fridge, store_super, '', false),
+    (new_workspace_id, 'קוקה קולה זירו (שישיה)', 2, 1, cat_drinks, loc_pantry, store_super, ''),
+    (new_workspace_id, 'מים מינרלים (שישיה)', 3, 1, cat_drinks, loc_pantry, store_super, ''),
+    (new_workspace_id, 'מיץ תפוזים פריגת', 1, 1, cat_drinks, loc_fridge, store_super, ''),
 
-    (new_workspace_id, 'חזה עוף חתוך', 2, 1, cat_veg, loc_fridge, store_meat, '', false), -- mapping to meat store, temp cat
-    (new_workspace_id, 'פפריקה מתוקה', 1, 1, cat_veg, loc_pantry, store_spice, '', false),
-    (new_workspace_id, 'מלח דק', 2, 1, cat_veg, loc_pantry, store_super, '', false);
+    (new_workspace_id, 'חזה עוף חתוך', 2, 1, cat_veg, loc_fridge, store_meat, ''), -- mapping to meat store, temp cat
+    (new_workspace_id, 'פפריקה מתוקה', 1, 1, cat_veg, loc_pantry, store_spice, ''),
+    (new_workspace_id, 'מלח דק', 2, 1, cat_veg, loc_pantry, store_super, '');
 
   RETURN NEW;
 END;
