@@ -58,86 +58,147 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
-      <div className="glass-panel w-full max-w-md p-6">
-        <h1 className="text-2xl font-bold text-center mb-6 text-accent">
-          {isSignUp ? 'יצירת חשבון' : 'התחברות למערכת'}
-        </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden" 
+         style={{ 
+           background: 'radial-gradient(circle at top right, #1a1b26 0%, #0d0f17 100%)',
+           direction: 'rtl'
+         }}>
+      
+      {/* Decorative Orbs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] rounded-full blur-[100px]" style={{ background: 'rgba(99, 102, 241, 0.15)' }} />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] rounded-full blur-[120px]" style={{ background: 'rgba(236, 72, 153, 0.1)' }} />
 
-        {msg && (
-          <div className={`mb-4 p-3 rounded-lg text-sm text-center font-bold ${
-            msg.type === 'error' ? 'bg-danger text-white' : 
-            msg.type === 'success' ? 'bg-success text-white' : 
-            'bg-accent text-white'
-          }`} style={{ animation: 'fadeIn 0.3s ease' }}>
-            {msg.text}
+      <div className="w-full max-w-[400px] relative z-10">
+        
+        {/* Brand Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center p-3 rounded-2xl mb-4" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.05) 100%)', border: '1px solid rgba(99,102,241,0.2)' }}>
+            <Home size={32} className="text-accent" />
           </div>
-        )}
+          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-l from-white to-gray-400 m-0" style={{ fontFamily: 'system-ui, sans-serif', letterSpacing: '-0.5px' }}>
+            Home Eco
+          </h1>
+          <p className="text-secondary mt-2 text-sm">ניהול מלאי חכם למשק הבית והעסק</p>
+        </div>
 
-        <form onSubmit={handleAuth} className="flex flex-col gap-4">
-          <div>
-            <label className="text-secondary text-sm mb-1 block">אימייל</label>
-            <input 
-              type="email" 
-              className="glass-input w-full p-3 font-sans" 
-              dir="ltr"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className="text-secondary text-sm mb-1 block">סיסמה</label>
-            <input 
-              type="password" 
-              className="glass-input w-full p-3 font-sans" 
-              dir="ltr"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-          </div>
+        <div className="glass-panel p-8" style={{
+          background: 'rgba(20, 22, 35, 0.6)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+          borderRadius: '24px'
+        }}>
+          
+          <h2 className="text-xl font-bold text-center mb-6 text-white">
+            {isSignUp ? 'יצירת חשבון חדש' : 'ברוכים השבים'}
+          </h2>
 
-          {isSignUp && (
-            <div className="mt-2">
-              <label className="text-secondary text-sm mb-2 block">סוג חשבון</label>
-              <div className="flex gap-2">
-                <button 
-                  type="button"
-                  className={`flex-1 glass-button ${!isBusiness ? 'border-accent' : 'secondary opacity-70'}`}
-                  onClick={() => setIsBusiness(false)}
-                >
-                  <Home size={18} /> ביתי
-                </button>
-                <button 
-                  type="button"
-                  className={`flex-1 glass-button ${isBusiness ? 'border-accent' : 'secondary opacity-70'}`}
-                  onClick={() => setIsBusiness(true)}
-                >
-                  <Briefcase size={18} /> עסקי
-                </button>
-              </div>
+          {msg && (
+            <div className={`mb-5 p-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 ${
+              msg.type === 'error' ? 'bg-danger/20 text-[#ff6b6b] border border-danger/30' : 
+              msg.type === 'success' ? 'bg-success/20 text-[#4ade80] border border-success/30' : 
+              'bg-accent/20 text-accent border border-accent/30'
+            }`} style={{ animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+              {msg.text}
             </div>
           )}
 
-          <button 
-            type="submit" 
-            className="glass-button w-full mt-4 justify-center"
-            disabled={loading}
-          >
-            {loading ? 'טוען...' : (isSignUp ? <><UserPlus size={18} /> הירשם</> : <><LogIn size={18} /> התחבר</>)}
-          </button>
-        </form>
+          <form onSubmit={handleAuth} className="flex flex-col gap-5">
+            <div>
+              <label className="text-secondary text-sm font-medium mb-2 block mr-1">כתובת דוא״ל</label>
+              <div className="relative">
+                <input 
+                  type="email" 
+                  className="w-full bg-[#0d0f17]/50 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-accent transition-colors"
+                  dir="ltr"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="text-secondary text-sm font-medium mb-2 block mr-1">סיסמה</label>
+              <div className="relative">
+                <input 
+                  type="password" 
+                  className="w-full bg-[#0d0f17]/50 border border-white/10 rounded-xl p-3.5 text-white outline-none focus:border-accent transition-colors"
+                  dir="ltr"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+            </div>
 
-        <div className="text-center mt-6">
-          <button 
-            className="text-secondary text-sm"
-            onClick={() => setIsSignUp(!isSignUp)}
-          >
-            {isSignUp ? 'כבר יש לך חשבון? התחבר כאן' : 'אין לך חשבון? צור חשבון חדש'}
-          </button>
+            {isSignUp && (
+              <div className="mt-2" style={{ animation: 'fadeIn 0.3s ease' }}>
+                <label className="text-secondary text-sm font-medium mb-3 block mr-1">בחר סוג חשבון</label>
+                <div className="flex gap-3">
+                  <button 
+                    type="button"
+                    className={`flex-1 py-3 px-2 rounded-xl flex flex-col items-center gap-2 transition-all duration-200 border ${
+                      !isBusiness 
+                        ? 'bg-accent/20 border-accent text-accent' 
+                        : 'bg-[#0d0f17]/50 border-white/10 text-secondary hover:bg-white/5'
+                    }`}
+                    onClick={() => setIsBusiness(false)}
+                  >
+                    <Home size={22} className={!isBusiness ? 'text-accent' : 'opacity-70'} />
+                    <span className="text-sm font-bold">חשבון ביתי</span>
+                  </button>
+                  <button 
+                    type="button"
+                    className={`flex-1 py-3 px-2 rounded-xl flex flex-col items-center gap-2 transition-all duration-200 border ${
+                      isBusiness 
+                        ? 'bg-accent/20 border-accent text-accent' 
+                        : 'bg-[#0d0f17]/50 border-white/10 text-secondary hover:bg-white/5'
+                    }`}
+                    onClick={() => setIsBusiness(true)}
+                  >
+                    <Briefcase size={22} className={isBusiness ? 'text-accent' : 'opacity-70'} />
+                    <span className="text-sm font-bold">חשבון עסקי</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              className="w-full mt-4 bg-accent hover:opacity-90 text-white font-bold rounded-xl p-4 flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]"
+              disabled={loading}
+              style={{ transform: loading ? 'scale(0.98)' : 'scale(1)' }}
+            >
+              {loading ? (
+                <span className="opacity-80">אנא המתן...</span>
+              ) : (
+                isSignUp ? <><UserPlus size={20} /> צור חשבון חדש</> : <><LogIn size={20} /> התחברות מאובטחת</>
+              )}
+            </button>
+          </form>
+
         </div>
+        
+        <div className="text-center mt-6">
+            <button 
+              className="text-secondary text-sm hover:text-white transition-colors"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setMsg(null);
+              }}
+            >
+              {isSignUp ? (
+                <span>כבר רשום למערכת? <strong className="text-accent ml-1 border-b border-accent/30 pb-0.5">התחבר כאן</strong></span>
+              ) : (
+                <span>משתמש חדש? <strong className="text-accent ml-1 border-b border-accent/30 pb-0.5">צור חשבון בחינם</strong></span>
+              )}
+            </button>
+        </div>
+
       </div>
     </div>
   );
