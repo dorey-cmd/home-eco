@@ -18,22 +18,36 @@ export interface Workspace {
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
-  workspace: Workspace | null;
+  workspaces: Workspace[];
+  activeWorkspace: Workspace | null;
+  setActiveWorkspaceId: (id: string) => void;
   loading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
-  workspace: null,
+  workspaces: [],
+  activeWorkspace: null,
+  setActiveWorkspaceId: () => {},
   loading: true,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [activeWorkspace, setActiveWorkspace] = useState<Workspace | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // New function to switch workspace globally
+  const setActiveWorkspaceId = (id: string) => {
+    const ws = workspaces.find(w => w.id === id);
+    if (ws) {
+      setActiveWorkspace(ws);
+      localStorage.setItem('home_eco_active_workspace', ws.id);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -43,7 +57,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (mounted) {
           setUser(null);
           setProfile(null);
-          setWorkspace(null);
+          setWorkspaces([]);
+          setActiveWorkspace(null);
           setLoading(false);
         }
         return;
@@ -57,18 +72,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .eq('id', currentUser.id)
           .single();
 
-        // Fetch workspaces
-        const { data: workspaceData } = await supabase
+        // Fetch ALL workspaces this user has access to
+        // Note: once workspace_sharing.sql is applied, we will just select from workspaces. 
+        // For now, it will return the one they own.
+        const { data: workspacesData } = await supabase
           .from('workspaces')
-          .select('*')
-          .eq('owner_id', currentUser.id)
-          .limit(1)
-          .single();
+          .select('*');
 
         if (mounted) {
           setUser(currentUser);
           setProfile(profileData as UserProfile);
-          setWorkspace(workspaceData as Workspace);
+          
+          const wsList = (workspacesData || []) as Workspace[];
+          setWorkspaces(wsList);
+          
+          if (wsList.length > 0) {
+            // Restore from localStorage if valid, otherwise pick first
+            const savedWsId = localStorage.getItem('home_eco_active_workspace');
+            const targetWs = wsList.find(w => w.id === savedWsId) || wsList[0];
+            setActiveWorkspace(targetWs);
+            localStorage.setItem('home_eco_active_workspace', targetWs.id);
+          } else {
+            setActiveWorkspace(null);
+          }
+          
           setLoading(false);
         }
       } catch (error) {
@@ -94,7 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, profile, workspace, loading }}>
+    <AuthContext.Provider value={{ user, profile, workspaces, activeWorkspace, setActiveWorkspaceId, loading }}>
       {children}
     </AuthContext.Provider>
   );

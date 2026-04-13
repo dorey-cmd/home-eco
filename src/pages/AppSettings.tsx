@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Layers, MapPin, Store, ChevronLeft, ShieldAlert, LogOut, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase';
+import WorkspaceManager from './components/WorkspaceManager';
 
 const AppSettings = () => {
   const navigate = useNavigate();
@@ -71,6 +72,8 @@ const AppSettings = () => {
           הגדר את מבנה הנתונים של היומיום. קבע שמות וסדר הופעה לשימוש נוח.
         </p>
       </div>
+      
+      <WorkspaceManager />
       
       <ActionButton icon={Layers} title="ניהול קטגוריות" description="מוצרי חלב, בשר, פירות וירקות, יבשים..." path="/settings/categories" />
       <ActionButton icon={Store} title={isBusiness ? "ניהול ספקים" : "ניהול חנויות קנייה"} description={isBusiness ? "עריכת הספקים הקבועים שלך" : "שופרסל, רמי לוי, ירקניה מקומית..."} path="/settings/stores" />
