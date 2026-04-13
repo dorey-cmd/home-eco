@@ -35,6 +35,17 @@ const Login = () => {
             setMsg({ text: 'הרשמה יוקרתית בוצעה בהצלחה! ברוך הבא.', type: 'success' });
         }
 
+        // Background trigger: Send to CRM (Altrubiz/GHL)
+        if (data.user) {
+          supabase.functions.invoke('ghl-sync', {
+            body: { 
+               email: email, 
+               role: isBusiness ? 'BUSINESS' : 'PRIVATE',
+               firstName: email.split('@')[0]
+            }
+          }).catch(err => console.error('CRM sync error:', err));
+        }
+
         setIsSignUp(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
