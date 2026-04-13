@@ -57,30 +57,30 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 bg-transparent" dir="rtl">
-      <div className="w-full max-w-sm glass-panel p-8" style={{ borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: '16px', background: 'transparent', direction: 'rtl' }}>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '380px', padding: '32px 24px', borderRadius: '24px' }}>
         
-        <h2 className="text-2xl font-bold text-center mb-8 text-white tracking-wide">
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '32px', color: '#fff', letterSpacing: '0.5px' }}>
           {isSignUp ? 'יצירת חשבון' : 'התחברות למערכת'}
         </h2>
 
         {msg && (
-          <div className={`mb-6 p-4 rounded-xl text-sm text-center font-bold ${
-            msg.type === 'error' ? 'bg-danger/20 text-[#ff6b6b] border border-danger/30' : 
-            msg.type === 'success' ? 'bg-success/20 text-[#4ade80] border border-success/30' : 
-            'bg-accent/20 text-accent border border-accent/30'
-          }`} style={{ animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ marginBottom: '24px', padding: '12px', borderRadius: '12px', fontSize: '0.875rem', textAlign: 'center', fontWeight: 'bold', 
+            background: msg.type === 'error' ? 'rgba(239, 68, 68, 0.2)' : msg.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(59, 130, 246, 0.2)',
+            color: msg.type === 'error' ? '#ef4444' : msg.type === 'success' ? '#10b981' : '#3b82f6',
+            border: `1px solid ${msg.type === 'error' ? 'rgba(239, 68, 68, 0.3)' : msg.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(59, 130, 246, 0.3)'}`
+          }}>
             {msg.text}
           </div>
         )}
 
-        <form onSubmit={handleAuth} className="flex flex-col gap-5">
+        <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label className="text-secondary text-sm mb-2 block font-medium">כתובת אימייל</label>
+            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>כתובת אמייל</label>
             <input 
               type="email" 
-              className="glass-input w-full p-3 font-sans text-right" 
-              dir="rtl"
+              className="glass-input" 
+              style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
               placeholder="כתובת דוא״ל..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -89,11 +89,11 @@ const Login = () => {
           </div>
           
           <div>
-            <label className="text-secondary text-sm mb-2 block font-medium">סיסמה</label>
+            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>סיסמה</label>
             <input 
               type="password" 
-              className="glass-input w-full p-3 font-sans text-right" 
-              dir="rtl"
+              className="glass-input" 
+              style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -103,21 +103,29 @@ const Login = () => {
           </div>
 
           {isSignUp && (
-            <div className="mt-2">
-              <label className="text-secondary text-sm mb-2 block font-medium">סוג משתמש</label>
-              <div className="flex gap-3">
+            <div style={{ marginTop: '8px', textAlign: 'right' }}>
+              <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', fontWeight: 500 }}>סוג חשבון</label>
+              <div style={{ display: 'flex', gap: '12px' }}>
                 <button 
                   type="button"
-                  className={`flex-1 rounded-xl py-2 transition-colors border ${!isBusiness ? 'bg-accent/20 border-accent text-accent' : 'bg-transparent border-[rgba(255,255,255,0.2)] text-secondary'}`}
-                  style={{ fontWeight: !isBusiness ? 'bold' : 'normal' }}
+                  style={{ flex: 1, padding: '10px', borderRadius: '12px', transition: 'all 0.2s ease', cursor: 'pointer',
+                           background: !isBusiness ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                           border: !isBusiness ? '1px solid var(--accent-color)' : '1px solid rgba(255,255,255,0.2)',
+                           color: !isBusiness ? 'var(--accent-color)' : 'var(--text-secondary)',
+                           fontWeight: !isBusiness ? 'bold' : 'normal'
+                         }}
                   onClick={() => setIsBusiness(false)}
                 >
                   בייתי
                 </button>
                 <button 
                   type="button"
-                  className={`flex-1 rounded-xl py-2 transition-colors border ${isBusiness ? 'bg-accent/20 border-accent text-accent' : 'bg-transparent border-[rgba(255,255,255,0.2)] text-secondary'}`}
-                  style={{ fontWeight: isBusiness ? 'bold' : 'normal' }}
+                  style={{ flex: 1, padding: '10px', borderRadius: '12px', transition: 'all 0.2s ease', cursor: 'pointer',
+                           background: isBusiness ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                           border: isBusiness ? '1px solid var(--accent-color)' : '1px solid rgba(255,255,255,0.2)',
+                           color: isBusiness ? 'var(--accent-color)' : 'var(--text-secondary)',
+                           fontWeight: isBusiness ? 'bold' : 'normal'
+                         }}
                   onClick={() => setIsBusiness(true)}
                 >
                   עסקי
@@ -128,26 +136,26 @@ const Login = () => {
 
           <button 
             type="submit" 
-            className="w-full mt-4 justify-center py-3.5 font-bold rounded-xl bg-accent text-white hover:opacity-90 transition-opacity border-none shadow-[0_4px_15px_rgba(99,102,241,0.3)]"
+            className="glass-button"
+            style={{ width: '100%', marginTop: '16px', justifyContent: 'center', padding: '16px', fontWeight: 'bold' }}
             disabled={loading}
           >
             {loading ? 'טוען...' : (isSignUp ? 'הרשמה למערכת' : 'התחברות')}
           </button>
         </form>
 
-        <div className="text-center mt-6">
+        <div style={{ textAlign: 'center', marginTop: '32px' }}>
           <div 
-            className="text-secondary cursor-pointer hover:text-white transition-colors block text-sm"
-            style={{ display: 'inline-block' }}
+            style={{ color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.875rem', display: 'inline-block' }}
             onClick={() => {
               setIsSignUp(!isSignUp);
               setMsg(null);
             }}
           >
             {isSignUp ? (
-              <span>כבר רשום? <span className="text-accent underline decoration-accent underline-offset-4">התחבר כאן</span></span>
+              <span>כבר רשום? <span style={{ color: 'var(--accent-color)' }}>התחבר כאן</span></span>
             ) : (
-              <span>משתמש חדש? <span className="text-accent underline decoration-accent underline-offset-4">צור חשבון בחינם</span></span>
+              <span>משתמש חדש? <span style={{ color: 'var(--accent-color)' }}>צור חשבון בחינם</span></span>
             )}
           </div>
         </div>
