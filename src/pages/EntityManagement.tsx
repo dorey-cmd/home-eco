@@ -85,7 +85,7 @@ const EntityManagement = () => {
     }
   };
 
-  const handleSetImage = async (id: string, currentImage?: string) => {
+  const handleSetImage = async (id: string, _currentImage?: string) => {
     if (!type || !apiMap[type]) return;
     
     const input = document.createElement('input');
