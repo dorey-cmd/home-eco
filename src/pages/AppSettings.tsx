@@ -5,7 +5,7 @@ import { supabase } from '../supabase';
 
 const AppSettings = () => {
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const isBusiness = profile?.role === 'BUSINESS';
 
   const handleLogout = async () => {
@@ -21,11 +21,11 @@ const AppSettings = () => {
       style={{ padding: '16px', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)', cursor: 'pointer', width: '100%', marginBottom: '12px', transition: 'all 0.2s ease', borderRadius: '12px' }}
       onClick={() => navigate(path)}
     >
-      <div className="flex items-center gap-4 text-right flex-1">
+      <div className="flex items-center gap-4 flex-1" style={{ textAlign: 'right' }}>
         <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(var(--accent-color-rgb, 129, 140, 248), 0.15)' }}>
           <Icon size={24} className="text-accent" />
         </div>
-        <div>
+        <div style={{ flex: 1, textAlign: 'right' }}>
           <h2 className="font-bold m-0" style={{ fontSize: '1.05rem', color: '#fff', marginBottom: '4px' }}>{title}</h2>
           <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)' }}>{description}</div>
         </div>
@@ -34,29 +34,13 @@ const AppSettings = () => {
     </button>
   );
 
-  const getRoleDisplay = () => {
-    switch (profile?.role) {
-      case 'ADMIN': return 'מנהל מערכת (Admin)';
-      case 'BUSINESS': return 'מסלול עסקי (כמותי)';
-      default: return 'משתמש ביתי';
-    }
-  };
+
 
   return (
     <div style={{ paddingBottom: '90px' }}>
       <h1 className="page-title mb-4">הגדרות מתקדמות</h1>
       
-      <div className="glass-panel mb-6 p-4 flex justify-between items-center" style={{ borderLeft: '4px solid var(--accent-color)' }}>
-        <div className="flex items-center gap-3">
-          <div className="bg-accent p-2 rounded-full" style={{ color: 'white' }}>
-            <User size={24} />
-          </div>
-          <div>
-            <div className="font-bold text-sm" style={{ fontFamily: 'monospace' }}>{user?.email}</div>
-            <div className="text-secondary text-xs">{getRoleDisplay()}</div>
-          </div>
-        </div>
-      </div>
+      <ActionButton icon={User} title="ניהול פרטים אישיים" description="צפייה ועריכת שם, אמצעי התקשרות ופרופיל" path="/settings/profile" />
 
       <div className="mb-4">
         <p className="text-secondary" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>
@@ -72,7 +56,7 @@ const AppSettings = () => {
       {profile?.role === 'ADMIN' && (
         <div className="mt-8 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
           <h2 className="text-secondary mb-2" style={{ fontSize: '0.9rem' }}>ניהול מערכת מיוחד</h2>
-          <ActionButton icon={ShieldAlert} title="לוח בקרה ראשי (Admin)" description="צפייה במשתמשים, חיפוש הרשמות וניהול גלובלי" path="/admin" />
+          <ActionButton icon={ShieldAlert} title="Admin Control" description="צפייה במשתמשים, חיפוש הרשמות וניהול גלובלי" path="/admin" />
         </div>
       )}
 

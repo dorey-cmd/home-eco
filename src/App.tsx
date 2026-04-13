@@ -6,6 +6,7 @@ import InventoryList from './pages/InventoryList';
 import ShoppingList from './pages/ShoppingList';
 import AddEditProduct from './pages/AddEditProduct';
 import AppSettings from './pages/AppSettings';
+import ProfileSettings from './pages/ProfileSettings';
 import WorkspaceSettings from './pages/WorkspaceSettings';
 import Reports from './pages/Reports';
 import EntityManagement from './pages/EntityManagement';
@@ -105,6 +106,7 @@ function AppContent() {
             <Route path="/edit/:id" element={<AddEditProduct />} />
             <Route path="/settings" element={<AppSettings />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/settings/profile" element={<ProfileSettings />} />
             <Route path="/settings/workspaces" element={<WorkspaceSettings />} />
             <Route path="/settings/:type" element={<EntityManagement />} />
             <Route path="/reports" element={<Reports />} />
