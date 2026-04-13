@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { supabase } from '../../supabase';
-import { Building, Plus, Users, ChevronDown, Check } from 'lucide-react';
-import type { Workspace } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase';
+import { Building, Plus, Users, ChevronDown, Check, ChevronRight } from 'lucide-react';
+import type { Workspace } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const WorkspaceManager = () => {
-  const { workspaces, activeWorkspace, setActiveWorkspaceId, profile, user } = useAuth();
+const WorkspaceSettings = () => {
+  const navigate = useNavigate();
+  const { workspaces, activeWorkspace, setActiveWorkspaceId, user } = useAuth();
   const [isCreating, setIsCreating] = useState(false);
   const [newWsName, setNewWsName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,9 +16,6 @@ const WorkspaceManager = () => {
   const [isInviting, setIsInviting] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
-
-  const isBusiness = profile?.role === 'BUSINESS';
-
   const handleCreate = async () => {
     if (!newWsName.trim() || !user) return;
     setLoading(true);
@@ -62,15 +61,23 @@ const WorkspaceManager = () => {
   };
 
   return (
-    <div className="glass-panel p-4 mb-6">
-      <h2 className="font-bold mb-3 flex items-center gap-2 text-accent">
-        <Building size={18} />
-        {isBusiness ? 'ניהול סניפים / מתחמים' : 'ניהול בתים / מרחבים'}
-      </h2>
+    <div style={{ paddingBottom: '90px' }}>
+      <div className="flex items-center gap-2 mb-6">
+        <button className="glass-button secondary p-2" onClick={() => navigate('/settings')}>
+          <ChevronRight size={24} />
+        </button>
+        <h1 className="page-title m-0">ניהול סביבת תפעול</h1>
+      </div>
+
+      <div className="glass-panel p-4 mb-6">
+        <h2 className="font-bold mb-3 flex items-center gap-2 text-accent">
+          <Building size={18} />
+          מעבר / בחירת סביבת תפעול
+        </h2>
 
       <div className="flex flex-col gap-3">
         <div className="text-secondary text-sm">
-          מרחב פעיל כעת:
+          סביבת התפעול הנוכחית:
         </div>
         
         <div className="relative">
@@ -122,7 +129,7 @@ const WorkspaceManager = () => {
             disabled={isInviting}
           >
             <Plus size={16} />
-            <span>הוסף מרחב עבודה נפרד</span>
+            <span>הוספת סביבת תפעול נוספת לחשבון</span>
           </button>
         )}
 
@@ -131,13 +138,13 @@ const WorkspaceManager = () => {
            <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
              {isInviting ? (
                <div className="flex flex-col gap-2 relative">
-                 <div className="text-sm font-bold text-accent">הזמן שותף למרחב ({activeWorkspace?.name})</div>
+                 <div className="text-sm font-bold text-accent">הזמן שותף לניהול הסביבה ({activeWorkspace?.name})</div>
                  <div className="text-xs text-secondary mb-1">השותף חייב להירשם לאפליקציה לפני שתוכל לצרף אותו בעזרת המייל שלו.</div>
                  <div className="flex gap-2">
                    <input 
                      type="email"
                      className="glass-input flex-1 p-2" 
-                     placeholder="אימייל של השותף / עובד..." 
+                     placeholder="אימייל של השותף..." 
                      value={inviteEmail}
                      onChange={e => setInviteEmail(e.target.value)}
                      autoFocus
@@ -165,15 +172,16 @@ const WorkspaceManager = () => {
                   disabled={isCreating}
                 >
                   <Users size={16} className="text-accent" />
-                  <span className="text-accent text-sm">הזמן שותף / משתמש לניהול משותף</span>
+                  <span className="text-accent text-sm">הזמן שותף / משתמש נוסף לערוך סביבה זו</span>
                 </button>
              )}
            </div>
         )}
 
       </div>
+      </div>
     </div>
   );
 };
 
-export default WorkspaceManager;
+export default WorkspaceSettings;
