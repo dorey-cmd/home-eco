@@ -46,55 +46,55 @@ BEGIN
 
   -- C. Insert Starter Kit Categories
   INSERT INTO public.categories (id, workspace_id, name, "order", image) VALUES
-    (cat_veg, new_workspace_id, 'ירקות ופירות', 1, 'https://placehold.co/200x200/e8f5e9/2e7d32?text=🥦'),
-    (cat_clean, new_workspace_id, 'חומרי ניקוי', 2, 'https://placehold.co/200x200/e3f2fd/1565c0?text=🧽'),
-    (cat_dairy, new_workspace_id, 'מוצרי חלב', 3, 'https://placehold.co/200x200/fff3e0/e65100?text=🧀'),
-    (cat_wine, new_workspace_id, 'יינות', 4, 'https://placehold.co/200x200/fce4ec/c2185b?text=🍷'),
-    (cat_drinks, new_workspace_id, 'שתיה קלה', 5, 'https://placehold.co/200x200/fffde7/f57f17?text=🥤');
+    (cat_veg, new_workspace_id, 'ירקות ופירות', 1, 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200'),
+    (cat_clean, new_workspace_id, 'חומרי ניקוי', 2, 'https://images.unsplash.com/photo-1584820927598-cffecc6555cc?w=200'),
+    (cat_dairy, new_workspace_id, 'מוצרי חלב', 3, 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=200'),
+    (cat_wine, new_workspace_id, 'יינות', 4, 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200'),
+    (cat_drinks, new_workspace_id, 'שתיה קלה', 5, 'https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?w=200');
 
   -- D. Insert Starter Kit Locations
   INSERT INTO public.locations (id, workspace_id, name, "order", image) VALUES
-    (loc_fridge, new_workspace_id, 'מקרר', 1, 'https://placehold.co/200x200/eceff1/455a64?text=❄️'),
-    (loc_pantry, new_workspace_id, 'מזווה', 2, 'https://placehold.co/200x200/eceff1/455a64?text=🚪'),
-    (loc_clean, new_workspace_id, 'ארון חומרי ניקוי', 3, 'https://placehold.co/200x200/eceff1/455a64?text=🧼'),
-    (loc_laundry, new_workspace_id, 'חדר כביסה', 4, 'https://placehold.co/200x200/eceff1/455a64?text=🧺'),
-    (loc_bath, new_workspace_id, 'ארון אמבטיה', 5, 'https://placehold.co/200x200/eceff1/455a64?text=🛁');
+    (loc_fridge, new_workspace_id, 'מקרר', 1, 'https://images.unsplash.com/photo-1584285418504-01018e6ce6c9?w=200'),
+    (loc_pantry, new_workspace_id, 'מזווה', 2, 'https://images.unsplash.com/photo-1590005022879-880290947ba9?w=200'),
+    (loc_clean, new_workspace_id, 'ארון חומרי ניקוי', 3, 'https://images.unsplash.com/photo-1603522207198-8e6d9b5e527d?w=200'),
+    (loc_laundry, new_workspace_id, 'חדר כביסה', 4, 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=200'),
+    (loc_bath, new_workspace_id, 'ארון אמבטיה', 5, 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200');
 
   -- E. Insert Starter Kit Stores
   INSERT INTO public.stores (id, workspace_id, name, "order", image) VALUES
-    (store_super, new_workspace_id, 'סופרמארקט', 1, 'https://placehold.co/200x200/f5f5f5/424242?text=🛒'),
-    (store_veg, new_workspace_id, 'ירקניה שכונתית', 2, 'https://placehold.co/200x200/f5f5f5/424242?text=🏪'),
-    (store_meat, new_workspace_id, 'קצב', 3, 'https://placehold.co/200x200/f5f5f5/424242?text=🥩'),
-    (store_pharm, new_workspace_id, 'סופרפארם', 4, 'https://placehold.co/200x200/f5f5f5/424242?text=💊'),
-    (store_spice, new_workspace_id, 'חנות תבלינים', 5, 'https://placehold.co/200x200/f5f5f5/424242?text=🌶️');
+    (store_super, new_workspace_id, 'סופרמארקט', 1, 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200'),
+    (store_veg, new_workspace_id, 'ירקניה שכונתית', 2, 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200'),
+    (store_meat, new_workspace_id, 'קצב', 3, 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=200'),
+    (store_pharm, new_workspace_id, 'סופרפארם', 4, 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=200'),
+    (store_spice, new_workspace_id, 'חנות תבלינים', 5, 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200');
 
   -- F. Insert Starter Kit Products
   INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku, image) VALUES
-    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', 'https://placehold.co/200x200/ffdddd/dd0000?text=🍅'),
-    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', 'https://placehold.co/200x200/ddffdd/008800?text=🥒'),
-    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://placehold.co/200x200/ffeedd/dd8800?text=🧅'),
-    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://placehold.co/200x200/eeddaa/aa8800?text=🥔'),
+    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200'),
+    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', 'https://images.unsplash.com/photo-1604977042946-1eecc30f6532?w=200'),
+    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://images.unsplash.com/photo-1618512496248-a0e28e4695eb?w=200'),
+    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200'),
     
-    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', 'https://placehold.co/200x200/ddddff/0000ff?text=🧪'),
-    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', 'https://placehold.co/200x200/ddffff/00aaaa?text=✨'),
-    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', 'https://placehold.co/200x200/ffddff/aa00aa?text=🧴'),
-    (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, '', 'https://placehold.co/200x200/ffddff/aa00aa?text=🌸'),
+    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', 'https://images.unsplash.com/photo-1585421514738-0245a499a0ed?w=200'),
+    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', 'https://images.unsplash.com/photo-1584820927598-cffecc6555cc?w=200'),
+    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', 'https://images.unsplash.com/photo-1610557892470-55d9e18b0ee2?w=200'),
+    (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, '', 'https://images.unsplash.com/photo-1520336214828-5b3ea7090887?w=200'),
     
-    (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffffff/000000?text=🥛'),
-    (new_workspace_id, 'גבינה צהובה תנובה', 1, 1, cat_dairy, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffffdd/aaaa00?text=🧀'),
-    (new_workspace_id, 'קוטג''', 2, 1, cat_dairy, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffffff/000000?text=🥣'),
-    (new_workspace_id, 'יוגורט טבעי', 4, 4, cat_dairy, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffffff/000000?text=🥄'),
+    (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200'),
+    (new_workspace_id, 'גבינה צהובה תנובה', 1, 1, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200'),
+    (new_workspace_id, 'קוטג''', 2, 1, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1531260840455-8ecfe440a358?w=200'),
+    (new_workspace_id, 'יוגורט טבעי', 4, 4, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1571212879599-231a5bd8b913?w=200'),
 
-    (new_workspace_id, 'יין אדום קברנה', 2, 1, cat_wine, loc_pantry, store_super, '', 'https://placehold.co/200x200/ffdddd/dd0000?text=🍷'),
-    (new_workspace_id, 'יין לבן חצי יבש', 1, 0, cat_wine, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffffdd/aaaa00?text=🥂'),
+    (new_workspace_id, 'יין אדום קברנה', 2, 1, cat_wine, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=200'),
+    (new_workspace_id, 'יין לבן חצי יבש', 1, 0, cat_wine, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=200'),
     
-    (new_workspace_id, 'קוקה קולה זירו (שישיה)', 2, 1, cat_drinks, loc_pantry, store_super, '', 'https://placehold.co/200x200/000000/ffffff?text=🥤'),
-    (new_workspace_id, 'מים מינרלים (שישיה)', 3, 1, cat_drinks, loc_pantry, store_super, '', 'https://placehold.co/200x200/ddffff/00aaaa?text=💧'),
-    (new_workspace_id, 'מיץ תפוזים פריגת', 1, 1, cat_drinks, loc_fridge, store_super, '', 'https://placehold.co/200x200/ffddaa/dd8800?text=🍊'),
+    (new_workspace_id, 'קוקה קולה זירו (שישיה)', 2, 1, cat_drinks, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1622483767028-fd16792bf3ee?w=200'),
+    (new_workspace_id, 'מים מינרלים (שישיה)', 3, 1, cat_drinks, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1523362249712-421b1b11ca3c?w=200'),
+    (new_workspace_id, 'מיץ תפוזים פריגת', 1, 1, cat_drinks, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1600271886742-f049dd45fba8?w=200'),
 
-    (new_workspace_id, 'חזה עוף חתוך', 2, 1, cat_veg, loc_fridge, store_meat, '', 'https://placehold.co/200x200/ffdddd/dd0000?text=🍗'),
-    (new_workspace_id, 'פפריקה מתוקה', 1, 1, cat_veg, loc_pantry, store_spice, '', 'https://placehold.co/200x200/ffaaaa/dd0000?text=🌶️'),
-    (new_workspace_id, 'מלח דק', 2, 1, cat_veg, loc_pantry, store_super, '', 'https://placehold.co/200x200/ffffff/000000?text=🧂');
+    (new_workspace_id, 'חזה עוף חתוך', 2, 1, cat_veg, loc_fridge, store_meat, '', 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=200'),
+    (new_workspace_id, 'פפריקה מתוקה', 1, 1, cat_veg, loc_pantry, store_spice, '', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200'),
+    (new_workspace_id, 'מלח דק', 2, 1, cat_veg, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1514986882353-84725049fb92?w=200');
 
   RETURN NEW;
 END;
