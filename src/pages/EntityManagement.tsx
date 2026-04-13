@@ -4,6 +4,8 @@ import { AppContext } from '../App';
 import { useAuth } from '../context/AuthContext';
 import { Trash2, Plus, ArrowUp, ArrowDown, ChevronRight, Edit2, Image as ImageIcon } from 'lucide-react';
 import { fetchCategories, fetchLocations, fetchStores, addCategory, addLocation, addStore, updateCategory, updateLocation, updateStore, deleteCategory, deleteLocation, deleteStore } from '../api';
+import { supabase } from '../supabase';
+import { resizeImage } from '../imageUtils';
 
 type EntityType = 'categories' | 'locations' | 'stores';
 
@@ -85,16 +87,32 @@ const EntityManagement = () => {
 
   const handleSetImage = async (id: string, currentImage?: string) => {
     if (!type || !apiMap[type]) return;
-    const newImage = window.prompt('הדבק כתובת (URL) של תמונה:', currentImage || '');
-    if (newImage !== null && newImage !== currentImage) {
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e: any) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
       try {
-        await apiMap[type].update(id, { image: newImage });
+        const resizedFile = await resizeImage(file, 200, 200);
+        const fileName = `${type}_${id}_${Math.random()}.jpg`;
+        
+        const { error: uploadError } = await supabase.storage.from('images').upload(fileName, resizedFile);
+        if (uploadError) throw uploadError;
+        
+        const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(fileName);
+        
+        await apiMap[type].update(id, { image: publicUrlData.publicUrl });
         await loadItems();
         refreshLookups();
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error('Error uploading image', err);
+        alert('שגיאה בתהליך העלאת התמונה');
       }
-    }
+    };
+    input.click();
   };
 
   const handleMove = async (index: number, direction: -1 | 1) => {

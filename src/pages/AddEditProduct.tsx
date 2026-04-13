@@ -4,6 +4,8 @@ import { useZxing } from 'react-zxing';
 import { Camera, Barcode, Save, Trash2, X } from 'lucide-react';
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../api';
 import type { Product } from '../api';
+import { supabase } from '../supabase';
+import { resizeImage } from '../imageUtils';
 import { AppContext } from '../App';
 import { useAuth } from '../context/AuthContext';
 
@@ -45,31 +47,22 @@ const AddEditProduct = () => {
     }
   };
 
-  const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 400;
-          const scaleSize = img.width > MAX_WIDTH ? MAX_WIDTH / img.width : 1;
-          canvas.width = img.width * scaleSize;
-          canvas.height = img.height * scaleSize;
-          
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-            setFormData(prev => ({ ...prev, image: compressedBase64 }));
-          } else {
-            setFormData(prev => ({ ...prev, image: reader.result as string }));
-          }
-        };
-        img.src = reader.result as string;
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    
+    try {
+      const resizedFile = await resizeImage(file, 400, 400);
+      const fileName = `product_${Date.now()}_${Math.random()}.jpg`;
+      
+      const { error: uploadError } = await supabase.storage.from('images').upload(fileName, resizedFile);
+      if (uploadError) throw uploadError;
+      
+      const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(fileName);
+      setFormData(prev => ({ ...prev, image: publicUrlData.publicUrl }));
+    } catch (err) {
+      console.error('Error uploading product image', err);
+      alert('תקלה בהעלאת התמונה.');
     }
   };
 

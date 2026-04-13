@@ -5,6 +5,7 @@ const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [isBusiness, setIsBusiness] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ text: string, type: 'error' | 'success' | 'info' } | null>(null);
@@ -19,6 +20,9 @@ const Login = () => {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: { phone }
+          }
         });
 
         if (error) throw error;
@@ -41,6 +45,7 @@ const Login = () => {
             body: { 
                email: email, 
                role: isBusiness ? 'BUSINESS' : 'PRIVATE',
+               phone: phone,
                firstName: email.split('@')[0]
             }
           }).catch(err => console.error('CRM sync error:', err));
@@ -98,6 +103,21 @@ const Login = () => {
               required
             />
           </div>
+          
+          {isSignUp && (
+            <div>
+              <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>מספר טלפון</label>
+              <input 
+                type="tel" 
+                className="glass-input" 
+                style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
+                placeholder="05X-XXXXXXX"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+          )}
           
           <div>
             <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>סיסמה</label>
