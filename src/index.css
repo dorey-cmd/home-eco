@@ -1,20 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Dark Glass Theme */
-  --bg-color: #0b1120;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent-color: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.4);
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --danger-color: #ef4444;
-  
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
+  /* RakBuy Brand Palette — derived from rakbuy.com */
+  --rakbuy-navy: #1a2b5e;
+  --rakbuy-navy-light: #2a3f7e;
+  --rakbuy-green: #2ecc71;
+  --rakbuy-green-dark: #27ae60;
+  --rakbuy-green-light: #e8faf0;
+  --rakbuy-blue-light: #e8f0fe;
+  --rakbuy-blue-soft: #d4e4fc;
+
+  /* Theme tokens */
+  --bg-color: #f0f4ff;
+  --bg-surface: #ffffff;
+  --text-primary: #1a2b5e;
+  --text-secondary: #6b7c9e;
+  --text-muted: #94a3b8;
+  --accent-color: #2ecc71;
+  --accent-glow: rgba(46, 204, 113, 0.25);
+  --success-color: #2ecc71;
+  --warning-color: #f1c40f;
+  --danger-color: #e74c3c;
+
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(26, 43, 94, 0.08);
+  --glass-shadow: 0 2px 16px rgba(26, 43, 94, 0.08);
+
+  --card-shadow: 0 1px 3px rgba(26, 43, 94, 0.06), 0 4px 16px rgba(26, 43, 94, 0.06);
+  --card-shadow-hover: 0 4px 24px rgba(26, 43, 94, 0.12);
+
   --font-family: 'Heebo', sans-serif;
 }
 
@@ -32,32 +46,63 @@ body {
   direction: rtl;
   min-height: 100vh;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59,130,246,0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(139,92,246,0.15) 0px, transparent 50%);
-  background-attachment: fixed;
 }
 
-/* Glassmorphism Classes */
+/* ═══════════════════════════════════════════
+   APP HEADER
+   ═══════════════════════════════════════════ */
+.app-header {
+  background: #ffffff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(26, 43, 94, 0.06);
+  box-shadow: 0 1px 8px rgba(26, 43, 94, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.app-header-logo {
+  height: 54px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.app-header-logo:hover {
+  transform: scale(1.03);
+}
+
+/* ═══════════════════════════════════════════
+   GLASS / CARD PANELS
+   ═══════════════════════════════════════════ */
 .glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--bg-surface);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.25s ease;
 }
 
+.glass-panel:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════ */
 .glass-button {
-  background: var(--accent-color);
+  background: linear-gradient(135deg, var(--rakbuy-green), var(--rakbuy-green-dark));
   color: white;
   border: none;
   padding: 12px 24px;
   border-radius: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px var(--accent-glow);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,47 +111,60 @@ body {
 
 .glass-button:active {
   transform: scale(0.96);
-  box-shadow: 0 2px 6px var(--accent-glow);
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .glass-button.secondary {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface);
   box-shadow: none;
   border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+}
+.glass-button.secondary:hover {
+  background: var(--rakbuy-blue-light);
 }
 .glass-button.secondary:active {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--rakbuy-blue-soft);
 }
 
 .glass-button.danger {
-  background: var(--danger-color);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
-/* Form Elements */
+/* ═══════════════════════════════════════════
+   FORM ELEMENTS
+   ═══════════════════════════════════════════ */
 .glass-input {
   width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid var(--glass-border);
+  background: #f8faff;
+  border: 1.5px solid rgba(26, 43, 94, 0.12);
   color: var(--text-primary);
   padding: 14px 16px;
   border-radius: 12px;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   outline: none;
 }
 
 .glass-input:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: #ffffff;
 }
 
-/* Layout */
+.glass-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════ */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding-bottom: 80px; /* Space for bottom nav */
+  padding-bottom: 80px;
 }
 
 .main-content {
@@ -117,6 +175,9 @@ body {
   width: 100%;
 }
 
+/* ═══════════════════════════════════════════
+   BOTTOM NAV
+   ═══════════════════════════════════════════ */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -130,6 +191,11 @@ body {
   border-radius: 24px 24px 0 0;
   border-bottom: none;
   padding-bottom: env(safe-area-inset-bottom);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(26, 43, 94, 0.08);
+  box-shadow: 0 -2px 20px rgba(26, 43, 94, 0.06);
 }
 
 .nav-item {
@@ -137,25 +203,28 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 0.75rem;
-  transition: color 0.2s ease;
+  font-weight: 500;
+  transition: color 0.25s ease;
 }
 
 .nav-item.active {
-  color: var(--accent-color);
+  color: var(--rakbuy-green);
 }
 
 .nav-item.active svg {
-  filter: drop-shadow(0 0 8px var(--accent-glow));
+  filter: drop-shadow(0 0 6px var(--accent-glow));
 }
 
 .nav-item svg {
   font-size: 1.5rem;
 }
 
-/* Floatin Action Button */
+/* ═══════════════════════════════════════════
+   FAB
+   ═══════════════════════════════════════════ */
 .fab {
   position: absolute;
   top: -24px;
@@ -164,36 +233,43 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--accent-color);
+  background: linear-gradient(135deg, var(--rakbuy-green), var(--rakbuy-navy));
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 8px 16px var(--accent-glow);
+  box-shadow: 0 6px 20px var(--accent-glow);
   cursor: pointer;
   font-size: 1.5rem;
-  border: 4px solid var(--bg-color);
+  border: 4px solid #ffffff;
   z-index: 101;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .fab:active {
   transform: translateX(-50%) scale(0.9);
 }
 
-/* Headers */
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  background: linear-gradient(to left, #fff, #94a3b8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.fab:hover {
+  box-shadow: 0 8px 28px var(--accent-glow);
 }
 
-/* Typography Helpers */
+/* ═══════════════════════════════════════════
+   HEADERS & TYPOGRAPHY
+   ═══════════════════════════════════════════ */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--rakbuy-navy);
+}
+
 .text-secondary {
   color: var(--text-secondary);
+}
+
+.text-accent {
+  color: var(--rakbuy-green);
 }
 
 .font-bold {
@@ -204,7 +280,9 @@ body {
   font-weight: 500;
 }
 
-/* Utilities */
+/* ═══════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════ */
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
@@ -214,7 +292,9 @@ body {
 .mt-4 { margin-top: 16px; }
 .mb-4 { margin-bottom: 16px; }
 
-/* Item Card */
+/* ═══════════════════════════════════════════
+   ITEM CARDS
+   ═══════════════════════════════════════════ */
 .item-card {
   display: flex;
   padding: 16px;
@@ -228,7 +308,7 @@ body {
   width: 80px;
   height: 80px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.3);
+  background: var(--rakbuy-blue-light);
   object-fit: cover;
   flex-shrink: 0;
   border: 1px solid var(--glass-border);
@@ -238,12 +318,12 @@ body {
   width: 80px;
   height: 80px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.3);
+  background: var(--rakbuy-blue-light);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  color: var(--text-secondary);
+  color: var(--rakbuy-navy);
   border: 1px solid var(--glass-border);
   flex-shrink: 0;
 }
@@ -259,21 +339,23 @@ body {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 4px;
+  color: var(--rakbuy-navy);
 }
 
 .badge {
   font-size: 0.7rem;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 100px;
-  background: rgba(255,255,255,0.1);
-  color: var(--text-secondary);
+  background: var(--rakbuy-green-light);
+  color: var(--rakbuy-green-dark);
   display: inline-block;
+  font-weight: 600;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  background: rgba(0,0,0,0.3);
+  background: var(--rakbuy-blue-light);
   border-radius: 100px;
   padding: 2px;
   border: 1px solid var(--glass-border);
@@ -288,19 +370,25 @@ body {
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: white;
+  color: var(--rakbuy-navy);
   cursor: pointer;
   font-size: 1.2rem;
+  transition: background 0.2s ease;
+}
+
+.btn-q:hover {
+  background: var(--rakbuy-blue-soft);
 }
 
 .btn-q:active {
-  background: rgba(255,255,255,0.1);
+  background: var(--rakbuy-green-light);
 }
 
 .q-val {
   min-width: 30px;
   text-align: center;
   font-weight: bold;
+  color: var(--rakbuy-navy);
 }
 
 .list-row {
@@ -309,12 +397,13 @@ body {
   gap: 12px;
   padding: 8px 12px;
   margin-bottom: 8px;
+  transition: box-shadow 0.25s ease;
 }
 
 .tiny-img {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
   border: 1px solid var(--glass-border);
@@ -323,15 +412,16 @@ body {
 .tiny-placeholder {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  background: var(--rakbuy-green-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--rakbuy-green-dark);
   flex-shrink: 0;
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(46, 204, 113, 0.15);
 }
 
 .truncate {
@@ -350,4 +440,92 @@ body {
   .form-row {
     flex-direction: row;
   }
+}
+
+/* ═══════════════════════════════════════════
+   LOGIN PAGE
+   ═══════════════════════════════════════════ */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  direction: rtl;
+  background: linear-gradient(180deg, #ffffff 0%, var(--rakbuy-blue-light) 50%, #f0f4ff 100%);
+}
+
+.login-logo {
+  height: 80px;
+  width: auto;
+  margin-bottom: 32px;
+  filter: drop-shadow(0 4px 12px rgba(26, 43, 94, 0.1));
+  animation: loginLogoEntry 0.6s ease-out;
+}
+
+@keyframes loginLogoEntry {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 36px 28px;
+  border-radius: 24px;
+  animation: loginCardEntry 0.5s ease-out 0.15s both;
+}
+
+@keyframes loginCardEntry {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SELECT DROPDOWN FIX (light theme)
+   ═══════════════════════════════════════════ */
+select.glass-input option {
+  color: var(--text-primary);
+  background: #ffffff;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 43, 94, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 43, 94, 0.25);
+}
+
+/* ═══════════════════════════════════════════
+   SELECTION
+   ═══════════════════════════════════════════ */
+::selection {
+  background: rgba(46, 204, 113, 0.2);
+  color: var(--rakbuy-navy);
 }

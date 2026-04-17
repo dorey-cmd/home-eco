@@ -36,7 +36,7 @@ const Login = () => {
         if (data.user?.identities?.length === 0 || !data.session) {
             setMsg({ text: 'הרשמה בוצעה בהצלחה! שלחנו לך הודעת אימות למייל. לחץ עליה כדי להיכנס.', type: 'info' });
         } else {
-            setMsg({ text: 'הרשמה יוקרתית בוצעה בהצלחה! ברוך הבא.', type: 'success' });
+            setMsg({ text: 'ברוך הבא ל-RakBuy! ההרשמה בוצעה בהצלחה.', type: 'success' });
         }
 
         // Background trigger: Send to CRM (Altrubiz/GHL)
@@ -73,18 +73,20 @@ const Login = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: '16px', background: 'transparent', direction: 'rtl' }}>
-      <div className="glass-panel" style={{ width: '100%', maxWidth: '380px', padding: '32px 24px', borderRadius: '24px' }}>
+    <div className="login-container">
+      <img src="/rakbuy-logo.png" alt="RakBuy" className="login-logo" />
+      
+      <div className="glass-panel login-card">
         
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '32px', color: '#fff', letterSpacing: '0.5px' }}>
-          {isSignUp ? 'יצירת חשבון' : 'התחברות למערכת'}
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, textAlign: 'center', marginBottom: '28px', color: 'var(--rakbuy-navy)' }}>
+          {isSignUp ? 'יצירת חשבון חדש' : 'התחברות'}
         </h2>
 
         {msg && (
-          <div style={{ marginBottom: '24px', padding: '12px', borderRadius: '12px', fontSize: '0.875rem', textAlign: 'center', fontWeight: 'bold', 
-            background: msg.type === 'error' ? 'rgba(239, 68, 68, 0.2)' : msg.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(59, 130, 246, 0.2)',
-            color: msg.type === 'error' ? '#ef4444' : msg.type === 'success' ? '#10b981' : '#3b82f6',
-            border: `1px solid ${msg.type === 'error' ? 'rgba(239, 68, 68, 0.3)' : msg.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(59, 130, 246, 0.3)'}`
+          <div style={{ marginBottom: '24px', padding: '12px 16px', borderRadius: '12px', fontSize: '0.875rem', textAlign: 'center', fontWeight: 600, 
+            background: msg.type === 'error' ? 'rgba(231, 76, 60, 0.08)' : msg.type === 'success' ? 'rgba(46, 204, 113, 0.08)' : 'rgba(26, 43, 94, 0.06)',
+            color: msg.type === 'error' ? '#e74c3c' : msg.type === 'success' ? '#27ae60' : '#1a2b5e',
+            border: `1px solid ${msg.type === 'error' ? 'rgba(231, 76, 60, 0.2)' : msg.type === 'success' ? 'rgba(46, 204, 113, 0.2)' : 'rgba(26, 43, 94, 0.12)'}`
           }}>
             {msg.text}
           </div>
@@ -92,7 +94,7 @@ const Login = () => {
 
         <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>כתובת אמייל</label>
+            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>כתובת אימייל</label>
             <input 
               type="email" 
               className="glass-input" 
@@ -139,27 +141,27 @@ const Login = () => {
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button 
                   type="button"
-                  style={{ flex: 1, padding: '10px', borderRadius: '12px', transition: 'all 0.2s ease', cursor: 'pointer',
-                           background: !isBusiness ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                           border: !isBusiness ? '1px solid var(--accent-color)' : '1px solid rgba(255,255,255,0.2)',
-                           color: !isBusiness ? 'var(--accent-color)' : 'var(--text-secondary)',
-                           fontWeight: !isBusiness ? 'bold' : 'normal'
+                  style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
+                           background: !isBusiness ? 'var(--rakbuy-green-light)' : '#f8faff',
+                           border: !isBusiness ? '2px solid var(--rakbuy-green)' : '1.5px solid rgba(26, 43, 94, 0.12)',
+                           color: !isBusiness ? 'var(--rakbuy-green-dark)' : 'var(--text-secondary)',
+                           fontWeight: !isBusiness ? 700 : 400
                          }}
                   onClick={() => setIsBusiness(false)}
                 >
-                  בייתי
+                  🏠 בייתי
                 </button>
                 <button 
                   type="button"
-                  style={{ flex: 1, padding: '10px', borderRadius: '12px', transition: 'all 0.2s ease', cursor: 'pointer',
-                           background: isBusiness ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                           border: isBusiness ? '1px solid var(--accent-color)' : '1px solid rgba(255,255,255,0.2)',
-                           color: isBusiness ? 'var(--accent-color)' : 'var(--text-secondary)',
-                           fontWeight: isBusiness ? 'bold' : 'normal'
+                  style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
+                           background: isBusiness ? 'rgba(26, 43, 94, 0.06)' : '#f8faff',
+                           border: isBusiness ? '2px solid var(--rakbuy-navy)' : '1.5px solid rgba(26, 43, 94, 0.12)',
+                           color: isBusiness ? 'var(--rakbuy-navy)' : 'var(--text-secondary)',
+                           fontWeight: isBusiness ? 700 : 400
                          }}
                   onClick={() => setIsBusiness(true)}
                 >
-                  עסקי
+                  🏢 עסקי
                 </button>
               </div>
             </div>
@@ -168,14 +170,14 @@ const Login = () => {
           <button 
             type="submit" 
             className="glass-button"
-            style={{ width: '100%', marginTop: '16px', justifyContent: 'center', padding: '16px', fontWeight: 'bold' }}
+            style={{ width: '100%', marginTop: '16px', justifyContent: 'center', padding: '16px', fontWeight: 700, fontSize: '1.05rem', borderRadius: '14px' }}
             disabled={loading}
           >
-            {loading ? 'טוען...' : (isSignUp ? 'הרשמה למערכת' : 'התחברות')}
+            {loading ? 'טוען...' : (isSignUp ? 'הרשמה ל-RakBuy' : 'כניסה')}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '32px' }}>
+        <div style={{ textAlign: 'center', marginTop: '28px' }}>
           <div 
             style={{ color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.875rem', display: 'inline-block' }}
             onClick={() => {
@@ -184,9 +186,9 @@ const Login = () => {
             }}
           >
             {isSignUp ? (
-              <span>כבר רשום? <span style={{ color: 'var(--accent-color)' }}>התחבר כאן</span></span>
+              <span>כבר רשום? <span style={{ color: 'var(--rakbuy-green-dark)', fontWeight: 600 }}>התחבר כאן</span></span>
             ) : (
-              <span>משתמש חדש? <span style={{ color: 'var(--accent-color)' }}>צור חשבון בחינם</span></span>
+              <span>משתמש חדש? <span style={{ color: 'var(--rakbuy-green-dark)', fontWeight: 600 }}>צור חשבון בחינם</span></span>
             )}
           </div>
         </div>

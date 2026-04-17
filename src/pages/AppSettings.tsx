@@ -18,19 +18,19 @@ const AppSettings = () => {
   const ActionButton = ({ icon: Icon, title, description, path }: { icon: any, title: string, description: string, path: string }) => (
     <button 
       className="glass-panel list-row flex items-center justify-between" 
-      style={{ padding: '16px', background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)', cursor: 'pointer', width: '100%', marginBottom: '12px', transition: 'all 0.2s ease', borderRadius: '12px' }}
+      style={{ padding: '16px', background: '#ffffff', border: '1px solid rgba(26, 43, 94, 0.08)', cursor: 'pointer', width: '100%', marginBottom: '12px', transition: 'all 0.25s ease', borderRadius: '14px' }}
       onClick={() => navigate(path)}
     >
       <div className="flex items-center gap-4 flex-1" style={{ textAlign: 'right' }}>
-        <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(var(--accent-color-rgb, 129, 140, 248), 0.15)' }}>
-          <Icon size={24} className="text-accent" />
+        <div className="flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--rakbuy-green-light)' }}>
+          <Icon size={24} style={{ color: 'var(--rakbuy-green-dark)' }} />
         </div>
         <div style={{ flex: 1, textAlign: 'right' }}>
-          <h2 className="font-bold m-0" style={{ fontSize: '1.05rem', color: '#fff', marginBottom: '4px' }}>{title}</h2>
-          <div style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.65)' }}>{description}</div>
+          <h2 className="font-bold m-0" style={{ fontSize: '1.05rem', color: 'var(--rakbuy-navy)', marginBottom: '4px' }}>{title}</h2>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{description}</div>
         </div>
       </div>
-      <ChevronLeft size={20} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
+      <ChevronLeft size={20} style={{ color: 'var(--text-muted)' }} />
     </button>
   );
 
@@ -64,7 +64,7 @@ const AppSettings = () => {
         <button 
           onClick={handleLogout}
           className="glass-button w-full flex items-center justify-center gap-2"
-          style={{ background: 'rgba(255, 60, 60, 0.1)', border: '1px solid rgba(255, 60, 60, 0.3)', color: '#ff6b6b' }}
+          style={{ background: 'rgba(231, 76, 60, 0.06)', border: '1px solid rgba(231, 76, 60, 0.2)', color: '#e74c3c', boxShadow: 'none' }}
         >
           <LogOut size={18} />
           <span className="font-bold">התנתק מהחשבון</span>

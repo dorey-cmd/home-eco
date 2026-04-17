@@ -66,14 +66,14 @@ const Reports = () => {
         
         <div className="flex gap-2 mb-2">
           <select className="glass-input" style={{ flex: 1, padding: '8px' }} value={dateFilter} onChange={e => setDateFilter(e.target.value as any)}>
-            <option value="30" style={{color: '#000'}}>30 ימים אחרונים</option>
-            <option value="90" style={{color: '#000'}}>3 חודשים אחרונים</option>
-            <option value="365" style={{color: '#000'}}>שנה אחרונה</option>
-            <option value="all" style={{color: '#000'}}>כל הזמנים</option>
+            <option value="30">30 ימים אחרונים</option>
+            <option value="90">3 חודשים אחרונים</option>
+            <option value="365">שנה אחרונה</option>
+            <option value="all">כל הזמנים</option>
           </select>
           <select className="glass-input" style={{ flex: 1, padding: '8px' }} value={storeFilter} onChange={e => setStoreFilter(e.target.value)}>
-            <option value="all" style={{color: '#000'}}>כל החנויות</option>
-            {stores.map(s => <option key={s.id} value={s.id} style={{color: '#000'}}>{s.name}</option>)}
+            <option value="all">כל החנויות</option>
+            {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </div>
       </div>

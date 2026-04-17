@@ -98,6 +98,9 @@ function AppContent() {
   return (
     <AppContext.Provider value={{ categories, locations, stores, refreshLookups }}>
       <div className="app-container">
+        <header className="app-header">
+          <img src="/rakbuy-logo.png" alt="RakBuy" className="app-header-logo" />
+        </header>
         <main className="main-content">
           <Routes>
             <Route path="/" element={<InventoryList />} />

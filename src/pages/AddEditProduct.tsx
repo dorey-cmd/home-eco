@@ -132,7 +132,7 @@ const AddEditProduct = () => {
             {formData.image ? (
               <img src={formData.image} alt="Product" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '12px', border: '1px solid var(--glass-border)' }} />
             ) : (
-              <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
+              <div style={{ width: '80px', height: '80px', borderRadius: '12px', background: 'var(--rakbuy-blue-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
                 <Camera size={28} />
               </div>
             )}
@@ -171,13 +171,13 @@ const AddEditProduct = () => {
            <div style={{ flex: 1 }}>
               <select className="glass-input" style={{ fontSize: '0.9rem', padding: '10px' }} value={formData.categoryId} onChange={e => setFormData({...formData, categoryId: e.target.value})}>
                 <option value="" disabled>קטגוריה</option>
-                {categories.map(c => <option key={c.id} value={c.id} style={{color: '#000'}}>{c.name}</option>)}
+                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
            </div>
            <div style={{ flex: 1 }}>
               <select className="glass-input" style={{ fontSize: '0.9rem', padding: '10px' }} value={formData.locationId} onChange={e => setFormData({...formData, locationId: e.target.value})}>
                 <option value="" disabled>{isBusiness ? 'סניף אחסון' : 'מיקום אחסון'}</option>
-                {locations.map(l => <option key={l.id} value={l.id} style={{color: '#000'}}>{l.name}</option>)}
+                {locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
               </select>
            </div>
         </div>
@@ -186,7 +186,7 @@ const AddEditProduct = () => {
            <div style={{ flex: '1.3' }}>
              <select className="glass-input" style={{ fontSize: '0.9rem', padding: '10px' }} value={formData.storeId} onChange={e => setFormData({...formData, storeId: e.target.value})}>
                 <option value="" disabled>{isBusiness ? 'מסופק על ידי...' : 'קונים ב...'}</option>
-                {stores.map(s => <option key={s.id} value={s.id} style={{color: '#000'}}>{s.name}</option>)}
+                {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
              </select>
            </div>
            <div style={{ flex: '2' }} className="flex gap-1">

@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const ws = workspaces.find(w => w.id === id);
     if (ws) {
       setActiveWorkspace(ws);
-      localStorage.setItem('home_eco_active_workspace', ws.id);
+      localStorage.setItem('rakbuy_active_workspace', ws.id);
     }
   };
 
@@ -88,10 +88,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           if (wsList.length > 0) {
             // Restore from localStorage if valid, otherwise pick first
-            const savedWsId = localStorage.getItem('home_eco_active_workspace');
+            const savedWsId = localStorage.getItem('rakbuy_active_workspace');
             const targetWs = wsList.find(w => w.id === savedWsId) || wsList[0];
             setActiveWorkspace(targetWs);
-            localStorage.setItem('home_eco_active_workspace', targetWs.id);
+            localStorage.setItem('rakbuy_active_workspace', targetWs.id);
           } else {
             setActiveWorkspace(null);
           }

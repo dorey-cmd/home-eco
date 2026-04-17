@@ -175,11 +175,11 @@ const EntityManagement = () => {
           {items.map((item, index) => (
             <div key={item.id} className="glass-panel list-row" style={{ padding: '12px' }}>
               {item.image ? (
-                <div style={{ width: '40px', height: '40px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, marginLeft: '12px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, marginLeft: '12px', border: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--rakbuy-blue-light)' }}>
                   <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               ) : (
-                <div style={{ width: '40px', height: '40px', borderRadius: '8px', flexShrink: 0, marginLeft: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px dashed rgba(255,255,255,0.2)' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '8px', flexShrink: 0, marginLeft: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--rakbuy-blue-light)', border: '1px dashed rgba(26, 43, 94, 0.15)' }}>
                   <ImageIcon size={18} style={{ opacity: 0.3 }} />
                 </div>
               )}

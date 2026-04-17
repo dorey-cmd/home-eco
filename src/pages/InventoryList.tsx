@@ -75,8 +75,8 @@ const InventoryList = () => {
           value={filterLocation} 
           onChange={e => setFilterLocation(e.target.value)}
         >
-          <option value="all" style={{color: '#000'}}>כל המיקומים</option>
-          {locations.map(loc => <option key={loc.id} value={loc.id} style={{color: '#000'}}>{loc.name}</option>)}
+          <option value="all">כל המיקומים</option>
+          {locations.map(loc => <option key={loc.id} value={loc.id}>{loc.name}</option>)}
         </select>
         
         <select 
@@ -85,8 +85,8 @@ const InventoryList = () => {
           value={filterCategory} 
           onChange={e => setFilterCategory(e.target.value)}
         >
-          <option value="all" style={{color: '#000'}}>כל הקטגוריות</option>
-          {categories.map(cat => <option key={cat.id} value={cat.id} style={{color: '#000'}}>{cat.name}</option>)}
+          <option value="all">כל הקטגוריות</option>
+          {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
         </select>
         
         <select 
@@ -95,8 +95,8 @@ const InventoryList = () => {
           value={filterStore} 
           onChange={e => setFilterStore(e.target.value)}
         >
-          <option value="all" style={{color: '#000'}}>כל החנויות</option>
-          {stores.map(store => <option key={store.id} value={store.id} style={{color: '#000'}}>{store.name}</option>)}
+          <option value="all">כל החנויות</option>
+          {stores.map(store => <option key={store.id} value={store.id}>{store.name}</option>)}
         </select>
       </div>
 

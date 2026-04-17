@@ -130,7 +130,7 @@ const WorkspaceSettings = () => {
         <div className="relative">
           <select 
             className="glass-input w-full appearance-none pr-8 font-bold"
-            style={{ fontSize: '1.1rem', padding: '12px', color: '#000' }}
+            style={{ fontSize: '1.1rem', padding: '12px' }}
             value={activeWorkspace?.id || ''}
             onChange={(e) => {
                 setActiveWorkspaceId(e.target.value);
@@ -138,7 +138,7 @@ const WorkspaceSettings = () => {
             }}
           >
             {workspaces.map((ws: Workspace) => (
-              <option key={ws.id} value={ws.id} style={{color: '#000'}}>
+              <option key={ws.id} value={ws.id}>
                 {ws.name} {ws.owner_id === user?.id ? '(בבעלותך)' : '(שותף)'}
               </option>
             ))}
@@ -227,7 +227,7 @@ const WorkspaceSettings = () => {
              ) : (
                 <button 
                   className="glass-button w-full flex items-center justify-center gap-2 mt-1"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px dashed var(--accent-color)' }}
+                  style={{ background: 'var(--rakbuy-green-light)', border: '1px dashed var(--accent-color)', boxShadow: 'none' }}
                   onClick={() => setIsInviting(true)}
                   disabled={isCreating || isEditing}
                 >

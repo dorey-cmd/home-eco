@@ -10,7 +10,7 @@ export interface Purchase { id: string; productId: string; storeId: string; quan
 // HELPERS
 const getWorkspaceId = async () => {
     // Avoid costly DB lookup that fails with arrays. Instead pull what AuthContext synced securely to localStorage.
-    const savedWsId = localStorage.getItem('home_eco_active_workspace');
+    const savedWsId = localStorage.getItem('rakbuy_active_workspace');
     if (savedWsId) return savedWsId;
 
     // Fallback exactly as before if for some reason localstorage is corrupted
@@ -19,7 +19,7 @@ const getWorkspaceId = async () => {
     const { data, error } = await supabase.from('workspaces').select('id').eq('owner_id', user.id).limit(1).single();
     if (error || !data) throw new Error("No workspace found");
     
-    localStorage.setItem('home_eco_active_workspace', data.id);
+    localStorage.setItem('rakbuy_active_workspace', data.id);
     return data.id;
 };
 
