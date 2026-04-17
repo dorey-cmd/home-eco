@@ -19,15 +19,16 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    const { email, role, phone, firstName, lastName } = body;
+    const { email, role, phone, firstName, lastName, marketingConsent } = body;
 
     // ═══ WEBHOOK — fires FIRST, independently of GHL CRM ═══
     const webhookPayload = {
       email,
       phone: phone || '',
-      firstName: firstName || 'User',
+      firstName: firstName || '',
       lastName: lastName || '',
       role: role || 'PRIVATE',
+      marketingConsent: marketingConsent || false,
       source: 'RakBuy App',
       signupTimestamp: new Date().toISOString()
     };

@@ -5,8 +5,11 @@ const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [isBusiness, setIsBusiness] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
+  const [showConsentHint, setShowConsentHint] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ text: string, type: 'error' | 'success' | 'info' } | null>(null);
 
@@ -14,21 +17,32 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
+    setShowConsentHint(false);
 
     try {
       if (isSignUp) {
+        // Check marketing consent before proceeding
+        if (!marketingConsent) {
+          setShowConsentHint(true);
+          setLoading(false);
+          return;
+        }
+
+        const nameParts = fullName.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { phone }
+            data: { phone, full_name: fullName, first_name: firstName, last_name: lastName }
           }
         });
 
         if (error) throw error;
         
         if (data.user && isBusiness) {
-          // Trigger creates it as PRIVATE by default, update to BUSINESS if needed
           await supabase.from('profiles').update({ role: 'BUSINESS' }).eq('id', data.user.id);
         }
 
@@ -39,14 +53,16 @@ const Login = () => {
             setMsg({ text: 'ברוך הבא ל-RakBuy! ההרשמה בוצעה בהצלחה.', type: 'success' });
         }
 
-        // Background trigger: Send to CRM (Altrubiz/GHL)
+        // Background trigger: Send to CRM + Webhook
         if (data.user) {
           supabase.functions.invoke('ghl-sync', {
             body: { 
                email: email, 
                role: isBusiness ? 'BUSINESS' : 'PRIVATE',
                phone: phone,
-               firstName: email.split('@')[0]
+               firstName: firstName,
+               lastName: lastName,
+               marketingConsent: true
             }
           }).catch(err => console.error('CRM sync error:', err));
         }
@@ -72,6 +88,9 @@ const Login = () => {
     }
   };
 
+  const labelStyle = { color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block' as const, textAlign: 'right' as const, fontWeight: 500 };
+  const inputStyle = { padding: '16px', textAlign: 'right' as const, direction: 'rtl' as const };
+
   return (
     <div className="login-container">
       <img src="/rakbuy-logo.png" alt="RakBuy" className="login-logo" />
@@ -93,12 +112,28 @@ const Login = () => {
         )}
 
         <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          {isSignUp && (
+            <div>
+              <label style={labelStyle}>שם מלא</label>
+              <input 
+                type="text" 
+                className="glass-input" 
+                style={inputStyle}
+                placeholder="שם פרטי ומשפחה"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
           <div>
-            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>כתובת אימייל</label>
+            <label style={labelStyle}>כתובת אימייל</label>
             <input 
               type="email" 
               className="glass-input" 
-              style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
+              style={inputStyle}
               placeholder="כתובת דוא״ל..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -108,11 +143,11 @@ const Login = () => {
           
           {isSignUp && (
             <div>
-              <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>מספר טלפון</label>
+              <label style={labelStyle}>מספר טלפון</label>
               <input 
                 type="tel" 
                 className="glass-input" 
-                style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
+                style={inputStyle}
                 placeholder="05X-XXXXXXX"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
@@ -122,11 +157,11 @@ const Login = () => {
           )}
           
           <div>
-            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', textAlign: 'right', fontWeight: 500 }}>סיסמה</label>
+            <label style={labelStyle}>סיסמה</label>
             <input 
               type="password" 
               className="glass-input" 
-              style={{ padding: '16px', textAlign: 'right', direction: 'rtl' }}
+              style={inputStyle}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -136,35 +171,79 @@ const Login = () => {
           </div>
 
           {isSignUp && (
-            <div style={{ marginTop: '8px', textAlign: 'right' }}>
-              <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '8px', display: 'block', fontWeight: 500 }}>סוג חשבון</label>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button 
-                  type="button"
-                  style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
-                           background: !isBusiness ? 'var(--rakbuy-green-light)' : '#f8faff',
-                           border: !isBusiness ? '2px solid var(--rakbuy-green)' : '1.5px solid rgba(26, 43, 94, 0.12)',
-                           color: !isBusiness ? 'var(--rakbuy-green-dark)' : 'var(--text-secondary)',
-                           fontWeight: !isBusiness ? 700 : 400
-                         }}
-                  onClick={() => setIsBusiness(false)}
-                >
-                  🏠 בייתי
-                </button>
-                <button 
-                  type="button"
-                  style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
-                           background: isBusiness ? 'rgba(26, 43, 94, 0.06)' : '#f8faff',
-                           border: isBusiness ? '2px solid var(--rakbuy-navy)' : '1.5px solid rgba(26, 43, 94, 0.12)',
-                           color: isBusiness ? 'var(--rakbuy-navy)' : 'var(--text-secondary)',
-                           fontWeight: isBusiness ? 700 : 400
-                         }}
-                  onClick={() => setIsBusiness(true)}
-                >
-                  🏢 עסקי
-                </button>
+            <>
+              <div style={{ marginTop: '8px', textAlign: 'right' }}>
+                <label style={labelStyle}>סוג חשבון</label>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button 
+                    type="button"
+                    style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
+                             background: !isBusiness ? 'var(--rakbuy-green-light)' : '#f8faff',
+                             border: !isBusiness ? '2px solid var(--rakbuy-green)' : '1.5px solid rgba(26, 43, 94, 0.12)',
+                             color: !isBusiness ? 'var(--rakbuy-green-dark)' : 'var(--text-secondary)',
+                             fontWeight: !isBusiness ? 700 : 400
+                           }}
+                    onClick={() => setIsBusiness(false)}
+                  >
+                    🏠 בייתי
+                  </button>
+                  <button 
+                    type="button"
+                    style={{ flex: 1, padding: '12px', borderRadius: '12px', transition: 'all 0.25s ease', cursor: 'pointer',
+                             background: isBusiness ? 'rgba(26, 43, 94, 0.06)' : '#f8faff',
+                             border: isBusiness ? '2px solid var(--rakbuy-navy)' : '1.5px solid rgba(26, 43, 94, 0.12)',
+                             color: isBusiness ? 'var(--rakbuy-navy)' : 'var(--text-secondary)',
+                             fontWeight: isBusiness ? 700 : 400
+                           }}
+                    onClick={() => setIsBusiness(true)}
+                  >
+                    🏢 עסקי
+                  </button>
+                </div>
               </div>
-            </div>
+
+              {/* Marketing consent */}
+              <div style={{ marginTop: '4px' }}>
+                <label 
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', textAlign: 'right' }}
+                  onClick={() => { setMarketingConsent(!marketingConsent); setShowConsentHint(false); }}
+                >
+                  <div style={{ 
+                    width: '22px', height: '22px', minWidth: '22px', borderRadius: '6px', marginTop: '2px',
+                    border: showConsentHint ? '2px solid #e8871e' : marketingConsent ? '2px solid var(--rakbuy-green)' : '1.5px solid rgba(26, 43, 94, 0.2)',
+                    background: marketingConsent ? 'var(--rakbuy-green)' : '#fff',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    transition: 'all 0.2s ease', flexShrink: 0
+                  }}>
+                    {marketingConsent && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
+                      אני מאשר/ת קבלת עדכונים, טיפים ומבצעים מ-RakBuy
+                    </span>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px', lineHeight: '1.4' }}>
+                      אנחנו שומרים על פרטיותך. ניתן להסיר את עצמך מרשימת הדיוור בכל עת.
+                    </div>
+                  </div>
+                </label>
+
+                {showConsentHint && (
+                  <div style={{ 
+                    marginTop: '8px', padding: '8px 12px', borderRadius: '8px', 
+                    fontSize: '0.8rem', color: '#b37116', 
+                    background: 'rgba(232, 135, 30, 0.08)', 
+                    border: '1px solid rgba(232, 135, 30, 0.2)',
+                    textAlign: 'right'
+                  }}>
+                    כדי להמשיך בהרשמה, יש לאשר את קבלת הדיוור 🙏
+                  </div>
+                )}
+              </div>
+            </>
           )}
 
           <button 
@@ -183,6 +262,7 @@ const Login = () => {
             onClick={() => {
               setIsSignUp(!isSignUp);
               setMsg(null);
+              setShowConsentHint(false);
             }}
           >
             {isSignUp ? (
