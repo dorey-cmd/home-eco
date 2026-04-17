@@ -44,8 +44,8 @@ serve(async (req) => {
             email: email,
             phone: phone || '',
             locationId: GHL_LOCATION_ID,
-            tags: ['home-eco-user', role],
-            source: 'Home-Eco Full-App'
+            tags: ['rakbuy-user', role],
+            source: 'RakBuy App'
         })
     });
 
@@ -57,6 +57,24 @@ serve(async (req) => {
     }
 
     const contactId = responseData.contact?.id;
+
+    // Fire webhook to LeadConnector for new signup automation
+    const webhookPayload = {
+      email,
+      phone: phone || '',
+      firstName: firstName || 'User',
+      lastName: lastName || '',
+      role: role || 'PRIVATE',
+      source: 'RakBuy App',
+      contactId: contactId || null,
+      signupTimestamp: new Date().toISOString()
+    };
+
+    fetch('https://services.leadconnectorhq.com/hooks/qRGdkRyGpmI5Lav8Kb1I/webhook-trigger/fa4e9232-91df-4079-800f-5f26fc94371a', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(webhookPayload)
+    }).catch(err => console.error('Webhook fire error:', err));
 
     // Update Supabase profiles securely
     if (contactId) {
