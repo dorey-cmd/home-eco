@@ -20,45 +20,8 @@ serve(async (req) => {
     }
 
     const { email, role, phone, firstName, lastName } = body;
-    
-    const GHL_API_TOKEN = Deno.env.get('GHL_API_TOKEN');
-    const GHL_LOCATION_ID = Deno.env.get('GHL_LOCATION_ID');
 
-    if (!GHL_API_TOKEN || !GHL_LOCATION_ID) {
-         console.warn('GHL Credentials not configured inside Edge Function environment variables.');
-         return new Response(JSON.stringify({ error: 'System CRM misconfigured' }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    // GoHighLevel API V2 Endpoint for Upserting Contact
-    const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${GHL_API_TOKEN}`,
-            'Version': '2021-07-28',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            first_name: firstName || 'User',
-            last_name: lastName || '',
-            email: email,
-            phone: phone || '',
-            locationId: GHL_LOCATION_ID,
-            tags: ['rakbuy-user', role],
-            source: 'RakBuy App'
-        })
-    });
-
-    const responseData = await ghlResponse.json();
-
-    if (!ghlResponse.ok) {
-        console.error('GHL API Error:', responseData);
-        return new Response(JSON.stringify({ error: 'Failed to sync to CRM', details: responseData }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    const contactId = responseData.contact?.id;
-
-    // Fire webhook to LeadConnector for new signup automation
+    // ═══ WEBHOOK — fires FIRST, independently of GHL CRM ═══
     const webhookPayload = {
       email,
       phone: phone || '',
@@ -66,28 +29,69 @@ serve(async (req) => {
       lastName: lastName || '',
       role: role || 'PRIVATE',
       source: 'RakBuy App',
-      contactId: contactId || null,
       signupTimestamp: new Date().toISOString()
     };
 
-    fetch('https://services.leadconnectorhq.com/hooks/qRGdkRyGpmI5Lav8Kb1I/webhook-trigger/fa4e9232-91df-4079-800f-5f26fc94371a', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(webhookPayload)
-    }).catch(err => console.error('Webhook fire error:', err));
-
-    // Update Supabase profiles securely
-    if (contactId) {
-        const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-        const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-            auth: { autoRefreshToken: false, persistSession: false }
-        });
-
-        // Find user by email from profiles and update
-        await supabaseAdmin.from('profiles').update({ ghl_id: contactId }).eq('email', email);
+    try {
+      await fetch('https://services.leadconnectorhq.com/hooks/qRGdkRyGpmI5Lav8Kb1I/webhook-trigger/fa4e9232-91df-4079-800f-5f26fc94371a', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(webhookPayload)
+      });
+      console.log('Webhook fired successfully for:', email);
+    } catch (err) {
+      console.error('Webhook fire error:', err);
     }
 
+    // ═══ GHL CRM SYNC — optional, depends on env vars ═══
+    const GHL_API_TOKEN = Deno.env.get('GHL_API_TOKEN');
+    const GHL_LOCATION_ID = Deno.env.get('GHL_LOCATION_ID');
+    let contactId = null;
+
+    if (GHL_API_TOKEN && GHL_LOCATION_ID) {
+      try {
+        const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GHL_API_TOKEN}`,
+                'Version': '2021-07-28',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                first_name: firstName || 'User',
+                last_name: lastName || '',
+                email: email,
+                phone: phone || '',
+                locationId: GHL_LOCATION_ID,
+                tags: ['rakbuy-user', role],
+                source: 'RakBuy App'
+            })
+        });
+
+        const responseData = await ghlResponse.json();
+
+        if (ghlResponse.ok) {
+          contactId = responseData.contact?.id;
+
+          // Update Supabase profiles securely
+          if (contactId) {
+              const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+              const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+              const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+                  auth: { autoRefreshToken: false, persistSession: false }
+              });
+              await supabaseAdmin.from('profiles').update({ ghl_id: contactId }).eq('email', email);
+          }
+        } else {
+          console.error('GHL API Error:', responseData);
+        }
+      } catch (ghlErr) {
+        console.error('GHL sync failed:', ghlErr);
+      }
+    } else {
+      console.warn('GHL Credentials not configured — skipping CRM sync, webhook already fired.');
+    }
 
     return new Response(JSON.stringify({ success: true, contactId }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
