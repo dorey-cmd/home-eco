@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { supabase } from '../supabase';
+
+const CONSENT_TEXT = 'אני מאשר/ת קבלת עדכונים, טיפים ומבצעים מ-RakBuy';
+const CONSENT_DISCLAIMER = 'אנחנו שומרים על פרטיותך. ניתן להסיר את עצמך מרשימת הדיוור בכל עת.';
+const FORM_VERSION = 'signup-form-v1';
+const PRIVACY_POLICY_VERSION = '1.0';
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -12,6 +17,18 @@ const Login = () => {
   const [showConsentHint, setShowConsentHint] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ text: string, type: 'error' | 'success' | 'info' } | null>(null);
+  const consentTimestampRef = useRef<string | null>(null);
+
+  const handleConsentToggle = () => {
+    const newVal = !marketingConsent;
+    setMarketingConsent(newVal);
+    setShowConsentHint(false);
+    if (newVal) {
+      consentTimestampRef.current = new Date().toISOString();
+    } else {
+      consentTimestampRef.current = null;
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,16 +70,23 @@ const Login = () => {
             setMsg({ text: 'ברוך הבא ל-RakBuy! ההרשמה בוצעה בהצלחה.', type: 'success' });
         }
 
-        // Background trigger: Send to CRM + Webhook
+        // Background trigger: Send to CRM + Webhook with full context
         if (data.user) {
           supabase.functions.invoke('ghl-sync', {
             body: { 
-               email: email, 
+               email,
                role: isBusiness ? 'BUSINESS' : 'PRIVATE',
-               phone: phone,
-               firstName: firstName,
-               lastName: lastName,
-               marketingConsent: true
+               phone,
+               firstName,
+               lastName,
+               userId: data.user.id,
+               marketingConsent: true,
+               consentTimestamp: consentTimestampRef.current || new Date().toISOString(),
+               consentText: CONSENT_TEXT + ' — ' + CONSENT_DISCLAIMER,
+               formVersion: FORM_VERSION,
+               privacyPolicyVersion: PRIVACY_POLICY_VERSION,
+               pageUrl: window.location.href,
+               userAgent: navigator.userAgent
             }
           }).catch(err => console.error('CRM sync error:', err));
         }
@@ -206,7 +230,7 @@ const Login = () => {
               <div style={{ marginTop: '4px' }}>
                 <label 
                   style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', textAlign: 'right' }}
-                  onClick={() => { setMarketingConsent(!marketingConsent); setShowConsentHint(false); }}
+                  onClick={handleConsentToggle}
                 >
                   <div style={{ 
                     width: '22px', height: '22px', minWidth: '22px', borderRadius: '6px', marginTop: '2px',
@@ -223,10 +247,10 @@ const Login = () => {
                   </div>
                   <div>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                      אני מאשר/ת קבלת עדכונים, טיפים ומבצעים מ-RakBuy
+                      {CONSENT_TEXT}
                     </span>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px', lineHeight: '1.4' }}>
-                      אנחנו שומרים על פרטיותך. ניתן להסיר את עצמך מרשימת הדיוור בכל עת.
+                      {CONSENT_DISCLAIMER}
                     </div>
                   </div>
                 </label>
