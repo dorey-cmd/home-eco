@@ -151,15 +151,17 @@ const AdminDashboard = () => {
                   <Building size={16} /> מרחבים פעילים: {getWorkspacesCount(p.id)}
                 </div>
                 
-                <button 
-                  className="glass-button secondary p-2 text-danger flex items-center gap-1"
-                  onClick={() => handleAction('deleteUser', p.id)}
-                  disabled={actionLoading === p.id}
-                  title="מחק משתמש לצמיתות מהמערכת"
-                >
-                  {actionLoading === p.id ? <CheckCircle size={16}/> : <Trash2 size={16} />}
-                  <span className="text-xs">השמד</span>
-                </button>
+                {p.email !== 'dorey@gor-ziv.com' && (
+                  <button 
+                    className="glass-button secondary p-2 text-danger flex items-center gap-1"
+                    onClick={() => handleAction('deleteUser', p.id)}
+                    disabled={actionLoading === p.id}
+                    title="מחק משתמש לצמיתות מהמערכת"
+                  >
+                    {actionLoading === p.id ? <CheckCircle size={16}/> : <Trash2 size={16} />}
+                    <span className="text-xs">השמד</span>
+                  </button>
+                )}
               </div>
               <div className="text-xs text-secondary mt-1">
                 נרשם: {new Date(p.created_at).toLocaleDateString('he-IL')} {new Date(p.created_at).toLocaleTimeString('he-IL')}

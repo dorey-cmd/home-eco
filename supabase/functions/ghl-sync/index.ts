@@ -56,7 +56,8 @@ serve(async (req) => {
         phone: phone || '',
         firstName: firstName || '',
         lastName: lastName || '',
-        userId: userId || null
+        userId: userId || null,
+        accountType: role === 'BUSINESS' ? 'עסקי' : 'פרטי'
       },
       consent: {
         marketingConsent: !!marketingConsent,
