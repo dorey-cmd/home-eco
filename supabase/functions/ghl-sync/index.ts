@@ -57,7 +57,7 @@ serve(async (req) => {
         firstName: firstName || '',
         lastName: lastName || '',
         userId: userId || null,
-        accountType: role === 'BUSINESS' ? 'עסקי' : 'פרטי'
+        accountType: role === 'BUSINESS' ? 'biz_user' : 'personal_user'
       },
       consent: {
         marketingConsent: !!marketingConsent,
