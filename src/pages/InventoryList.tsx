@@ -58,8 +58,9 @@ const InventoryList = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="page-title" style={{ marginBottom: 0 }}>המלאי שלי</h1>
+      {/* STICKY HEADER */}
+      <div className="flex justify-between items-center mb-2" style={{ position: 'sticky', top: 0, zIndex: 40, background: 'rgba(244, 246, 250, 0.9)', backdropFilter: 'blur(10px)', -WebkitBackdropFilter: 'blur(10px)', padding: '12px 0', margin: '-12px 0 12px 0' }}>
+        <h1 className="page-title" style={{ marginBottom: 0, fontSize: '1.4rem' }}>המלאי שלי</h1>
         <div className="flex gap-2 bg-white rounded-xl p-1" style={{ border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }}>
           <button 
             onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -86,7 +87,7 @@ const InventoryList = () => {
       </div>
       
       {isSearchOpen && (
-        <div className="mb-4 animate-fade-in">
+        <div className="mb-4 animate-fade-in" style={{ position: 'sticky', top: '64px', zIndex: 39 }}>
           <div className="glass-panel flex items-center px-4 mb-3" style={{ padding: '0 12px' }}>
             <Search size={20} className="text-secondary" />
             <input 
@@ -182,12 +183,12 @@ const InventoryList = () => {
 
           // Grid View Card
           return (
-            <div key={p.id} className="glass-panel product-card relative">
+            <div key={p.id} className="glass-panel product-card" style={{ position: 'relative' }}>
               
               <button 
                 onClick={() => navigate(`/edit/${p.id}`)} 
-                className="absolute top-2 left-2 z-10 glass-button secondary p-2"
-                style={{ borderRadius: '50%', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)', width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                className="glass-button secondary p-2"
+                style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)', width: '32px', height: '32px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Edit2 size={16} className="text-secondary" />
               </button>
@@ -203,15 +204,15 @@ const InventoryList = () => {
               <div className="product-card-details">
                 <div className="font-bold truncate" style={{ fontSize: '1.05rem', color: 'var(--text-color)' }}>{p.name}</div>
                 
-                <div className="quantity-control w-full" style={{ padding: '4px', marginTop: 'auto' }}>
-                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '36px', height: '36px', fontSize: '1.2rem', padding: 0 }}>
-                    <Minus size={18} />
+                <div className="quantity-control w-full" style={{ padding: '6px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '38px', height: '38px', fontSize: '1.2rem', padding: 0, flexShrink: 0 }}>
+                    <Minus size={20} />
                   </button>
-                  <div className="flex items-center justify-center flex-1">
-                    <span className="q-val font-bold" style={{ fontSize: '1.2rem', padding: '0 4px', direction: 'ltr' }}>{p.currentQuantity} <span className="text-secondary text-sm font-bold">/ {p.targetQuantity}</span></span>
+                  <div className="flex items-center justify-center flex-1" style={{ minWidth: 0 }}>
+                    <span className="q-val" style={{ fontSize: '1.3rem', padding: '0 4px', direction: 'ltr', fontWeight: '900', whiteSpace: 'nowrap' }}>{p.currentQuantity} <span className="text-secondary" style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>/ {p.targetQuantity}</span></span>
                   </div>
-                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '36px', height: '36px', fontSize: '1.2rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white' }}>
-                    <Plus size={18} />
+                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '38px', height: '38px', fontSize: '1.2rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white', flexShrink: 0 }}>
+                    <Plus size={20} />
                   </button>
                 </div>
               </div>

@@ -182,68 +182,78 @@ const WorkspaceSettings = () => {
 
         {/* INVITATION SECTION */}
         {isOwner && (
-           <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
-             {isInviting ? (
-               <div className="flex flex-col gap-2 relative">
-                 <div className="text-sm font-bold text-accent">הזמן שותף לניהול הסביבה ({activeWorkspace?.name})</div>
-                 <div className="text-xs text-secondary mb-1">השותף חייב להירשם לאפליקציה לפני שתוכל לצרף אותו בעזרת המייל שלו.</div>
-                 
-                 <div className="flex gap-2">
-                   <select 
-                     className="glass-input p-2 flex-1" 
-                     value={inviteRole}
-                     onChange={e => setInviteRole(e.target.value as 'MEMBER' | 'VIEWER')}
-                     style={{ minWidth: '100px' }}
-                   >
-                     <option value="MEMBER">שותף מלא (ניהול מוצרים)</option>
-                     <option value="VIEWER">קניות בלבד (צפייה ועריכת קניות)</option>
-                   </select>
-                 </div>
+           <div className="mt-6">
+             <div className="flex items-center gap-2 mb-3">
+               <Users size={18} className="text-accent" />
+               <h3 className="font-bold text-accent m-0">שותפים בסביבה ({activeWorkspace?.name})</h3>
+             </div>
+             
+             <div className="glass-panel" style={{ padding: '16px', background: 'rgba(255,255,255,0.5)' }}>
+               {isInviting ? (
+                 <div className="flex flex-col gap-3 animate-fade-in">
+                   <div className="text-xs text-secondary mb-1">השותף חייב להירשם לאפליקציה לפני שתוכל לצרף אותו בעזרת המייל שלו.</div>
+                   
+                   <div className="flex flex-col gap-2">
+                     <label className="text-xs font-bold text-secondary">סוג הרשאה:</label>
+                     <select 
+                       className="glass-input p-2 w-full" 
+                       value={inviteRole}
+                       onChange={e => setInviteRole(e.target.value as 'MEMBER' | 'VIEWER')}
+                     >
+                       <option value="MEMBER">שותף מלא (ניהול מוצרים)</option>
+                       <option value="VIEWER">קניות בלבד (צפייה ועריכת קניות)</option>
+                     </select>
+                   </div>
 
-                 <div className="flex gap-2">
-                   <input 
-                     type="email"
-                     className="glass-input flex-1 p-2" 
-                     placeholder="אימייל של השותף..." 
-                     value={inviteEmail}
-                     onChange={e => setInviteEmail(e.target.value)}
-                     autoFocus
-                   />
-                   <button 
-                     className="glass-button success p-2" 
-                     onClick={handleInvite}
-                     disabled={inviteLoading || !inviteEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
-                   >
-                     <Check size={20} />
-                   </button>
-                   <button 
-                     className="glass-button danger p-2" 
-                     onClick={() => setIsInviting(false)}
-                   >
-                     ביטול
-                   </button>
+                   <div className="flex flex-col gap-2 mt-1">
+                     <label className="text-xs font-bold text-secondary">כתובת אימייל:</label>
+                     <div className="flex gap-2">
+                       <input 
+                         type="email"
+                         className="glass-input flex-1 p-2" 
+                         placeholder="אימייל של השותף..." 
+                         value={inviteEmail}
+                         onChange={e => setInviteEmail(e.target.value)}
+                         autoFocus
+                       />
+                       <button 
+                         className="glass-button success p-2" 
+                         onClick={handleInvite}
+                         disabled={inviteLoading || !inviteEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)}
+                       >
+                         <Check size={20} />
+                       </button>
+                       <button 
+                         className="glass-button danger p-2" 
+                         onClick={() => setIsInviting(false)}
+                       >
+                         ביטול
+                       </button>
+                     </div>
+                   </div>
                  </div>
-               </div>
-             ) : (
-                <button 
-                  className="glass-button w-full flex items-center justify-center gap-2 mt-1"
-                  style={{ background: 'var(--rakbuy-green-light)', border: '1px dashed var(--accent-color)', boxShadow: 'none' }}
-                  onClick={() => setIsInviting(true)}
-                  disabled={isCreating || isEditing}
-                >
-                  <Users size={16} className="text-accent" />
-                  <span className="text-accent text-sm">הזמן שותף לסביבה זו</span>
-                </button>
-             )}
+               ) : (
+                  <button 
+                    className="glass-button w-full flex items-center justify-center gap-2"
+                    style={{ background: 'white', border: '1px dashed var(--accent-color)', boxShadow: 'none' }}
+                    onClick={() => setIsInviting(true)}
+                    disabled={isCreating || isEditing}
+                  >
+                    <Plus size={16} className="text-accent" />
+                    <span className="text-accent font-bold">הזמן שותף חדש</span>
+                  </button>
+               )}
+             </div>
            </div>
         )}
 
         {/* OWNER ACTIONS SECTION (Rename & Delete) */}
         {isOwner && activeWorkspace && (
-           <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>
+           <div className="mt-6 pt-6" style={{ borderTop: '1px solid var(--glass-border)' }}>
+             <h3 className="font-bold text-secondary mb-3 text-sm">הגדרות מתקדמות למרחב מנהל</h3>
              {isEditing ? (
-               <div className="flex flex-col gap-2">
-                   <div className="text-sm font-bold text-accent">שינוי שם הסביבה</div>
+               <div className="glass-panel p-3 animate-fade-in">
+                   <div className="text-sm font-bold text-accent mb-2">שינוי שם הסביבה</div>
                    <div className="flex gap-2">
                      <input 
                        className="glass-input flex-1 p-2" 
@@ -260,7 +270,7 @@ const WorkspaceSettings = () => {
                    </div>
                </div>
              ) : (
-               <div className="flex gap-2 mt-2">
+               <div className="flex gap-2">
                   <button 
                     className="glass-button secondary flex-1 flex items-center justify-center gap-2"
                     onClick={() => setIsEditing(true)}
@@ -273,7 +283,7 @@ const WorkspaceSettings = () => {
                       className="glass-button danger flex-1 flex items-center justify-center gap-2"
                       onClick={handleDelete}
                       disabled={loading || isCreating || isInviting}
-                      style={{ opacity: 0.8 }}
+                      style={{ opacity: 0.9, background: 'rgba(231, 76, 60, 0.1)', color: '#e74c3c' }}
                     >
                       <Trash2 size={16} /> מחיקת הסביבה
                     </button>
