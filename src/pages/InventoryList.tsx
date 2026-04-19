@@ -205,7 +205,7 @@ const InventoryList = () => {
                 <div className="font-bold truncate" style={{ fontSize: '1rem', color: 'var(--text-color)', marginBottom: '2px' }}>{p.name}</div>
                 
                 <div className="quantity-control w-full" style={{ padding: '4px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: '#e74c3c', color: 'white', flexShrink: 0, borderRadius: '8px' }}>
+                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: '#e74c3c', color: 'white', flexShrink: 0, borderRadius: '50%' }}>
                     <Minus size={16} />
                   </button>
                   <div className="flex items-center justify-center flex-1" style={{ minWidth: 0 }}>
@@ -215,7 +215,7 @@ const InventoryList = () => {
                       <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--rakbuy-navy)' }}>{p.targetQuantity || 0}</span>
                     </span>
                   </div>
-                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white', flexShrink: 0, borderRadius: '8px' }}>
+                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white', flexShrink: 0, borderRadius: '50%' }}>
                     <Plus size={16} />
                   </button>
                 </div>
