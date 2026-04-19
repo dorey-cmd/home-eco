@@ -1,107 +1,110 @@
--- 1. Ensure all image columns exist securely
-ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS image TEXT;
-ALTER TABLE public.locations ADD COLUMN IF NOT EXISTS image TEXT;
-ALTER TABLE public.stores ADD COLUMN IF NOT EXISTS image TEXT;
-ALTER TABLE public.products ADD COLUMN IF NOT EXISTS image TEXT;
+-- Onboarding Deep Clone Algorithm
+-- Executes automatically when a new user signs up.
+-- Clones entire workspace from default-home@gor-ziv.com
 
--- 2. Ensure need_to_buy doesn't exist (safety cleanup if someone added it)
--- ALTER TABLE public.products DROP COLUMN IF EXISTS need_to_buy;
+-- 1. DROP the existing trigger so we can safely redefine the function
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
--- 3. Replace the Registration Trigger Safely
+-- 2. CREATE or REPLACE the function logic
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER SET search_path = public
 AS $$
 DECLARE
-  new_workspace_id UUID;
-  
-  -- Use standard := syntax for variables
-  cat_veg UUID := gen_random_uuid();
-  cat_clean UUID := gen_random_uuid();
-  cat_dairy UUID := gen_random_uuid();
-  cat_wine UUID := gen_random_uuid();
-  cat_drinks UUID := gen_random_uuid();
-  cat_general UUID := gen_random_uuid();
-
-  loc_fridge UUID := gen_random_uuid();
-  loc_pantry UUID := gen_random_uuid();
-  loc_clean UUID := gen_random_uuid();
-  loc_laundry UUID := gen_random_uuid();
-  loc_bath UUID := gen_random_uuid();
-  loc_general UUID := gen_random_uuid();
-
-  store_super UUID := gen_random_uuid();
-  store_veg UUID := gen_random_uuid();
-  store_meat UUID := gen_random_uuid();
-  store_pharm UUID := gen_random_uuid();
-  store_spice UUID := gen_random_uuid();
-  store_general UUID := gen_random_uuid();
+    new_workspace_id UUID;
+    template_uid UUID;
+    template_ws_id UUID;
 BEGIN
-  -- A. Create a profile entry
-  INSERT INTO public.profiles (id, email, role)
-  VALUES (new.id, new.email, COALESCE(new.raw_user_meta_data->>'role', 'PRIVATE'));
+    ---------- 1. CREATE CORE IDENTITIES ----------
+    INSERT INTO public.profiles (id, email, role)
+    VALUES (new.id, new.email, 'PRIVATE');
 
-  -- B. Create the default initial workspace
-  INSERT INTO public.workspaces (owner_id, name)
-  VALUES (new.id, 'סביבת תפעול ראשית')
-  RETURNING id INTO new_workspace_id;
+    INSERT INTO public.workspaces (owner_id, name)
+    VALUES (new.id, 'המרחב הראשי')
+    RETURNING id INTO new_workspace_id;
 
-  -- C. Insert Starter Kit Categories
-  INSERT INTO public.categories (id, workspace_id, name, "order", image) VALUES
-    (cat_general, new_workspace_id, 'כללי', 0, 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=200'),
-    (cat_veg, new_workspace_id, 'ירקות ופירות', 1, 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200'),
-    (cat_clean, new_workspace_id, 'חומרי ניקוי', 2, 'https://images.unsplash.com/photo-1584820927598-cffecc6555cc?w=200'),
-    (cat_dairy, new_workspace_id, 'מוצרי חלב', 3, 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=200'),
-    (cat_wine, new_workspace_id, 'יינות', 4, 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=200'),
-    (cat_drinks, new_workspace_id, 'שתיה קלה', 5, 'https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?w=200');
-
-  -- D. Insert Starter Kit Locations
-  INSERT INTO public.locations (id, workspace_id, name, "order", image) VALUES
-    (loc_general, new_workspace_id, 'מיקום כללי', 0, 'https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=200'),
-    (loc_fridge, new_workspace_id, 'מקרר', 1, 'https://images.unsplash.com/photo-1584285418504-01018e6ce6c9?w=200'),
-    (loc_pantry, new_workspace_id, 'מזווה', 2, 'https://images.unsplash.com/photo-1590005022879-880290947ba9?w=200'),
-    (loc_clean, new_workspace_id, 'ארון חומרי ניקוי', 3, 'https://images.unsplash.com/photo-1603522207198-8e6d9b5e527d?w=200'),
-    (loc_laundry, new_workspace_id, 'חדר כביסה', 4, 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=200'),
-    (loc_bath, new_workspace_id, 'ארון אמבטיה', 5, 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200');
-
-  -- E. Insert Starter Kit Stores
-  INSERT INTO public.stores (id, workspace_id, name, "order", image) VALUES
-    (store_general, new_workspace_id, 'קניות כללי', 0, 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200'),
-    (store_super, new_workspace_id, 'סופרמארקט', 1, 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200'),
-    (store_veg, new_workspace_id, 'ירקניה שכונתית', 2, 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200'),
-    (store_meat, new_workspace_id, 'קצב', 3, 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=200'),
-    (store_pharm, new_workspace_id, 'סופרפארם', 4, 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=200'),
-    (store_spice, new_workspace_id, 'חנות תבלינים', 5, 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200');
-
-  -- F. Insert Starter Kit Products
-  INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku, image) VALUES
-    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
-    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/9/96/Cucumber_and_slices.jpg'),
-    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/2/25/Onion_on_White.JPG'),
-    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Patates.jpg'),
+    ---------- 2. LOCATE TEMPLATE DOMAIN ----------
+    SELECT id INTO template_uid FROM auth.users WHERE email = 'default-home@gor-ziv.com' LIMIT 1;
     
-    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Chlorine_bleach.jpg/800px-Chlorine_bleach.jpg'),
-    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Floor_cleaner.jpg/800px-Floor_cleaner.jpg'),
-    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Liquid_detergent_%282%29.jpg/800px-Liquid_detergent_%282%29.jpg'),
-    (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, '', 'https://images.unsplash.com/photo-1520336214828-5b3ea7090887?w=200'),
+    -- If template user doesn't exist, exit cleanly (empty workspace)
+    IF template_uid IS NULL THEN 
+       RETURN new;
+    END IF;
+
+    -- Grab template user's primary workspace
+    SELECT id INTO template_ws_id FROM public.workspaces WHERE owner_id = template_uid ORDER BY created_at ASC LIMIT 1;
+    IF template_ws_id IS NULL THEN 
+       RETURN new;
+    END IF;
+
+    ---------- 3. CLONE CATEGORIES & MAP IDs ----------
+    CREATE TEMP TABLE tmp_cat_map (old_id UUID, new_id UUID, cat_name TEXT) ON COMMIT DROP;
     
-    (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200'),
-    (new_workspace_id, 'גבינה צהובה תנובה', 1, 1, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=200'),
-    (new_workspace_id, 'קוטג''', 2, 1, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1531260840455-8ecfe440a358?w=200'),
-    (new_workspace_id, 'יוגורט טבעי', 4, 4, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1571212879599-231a5bd8b913?w=200'),
+    WITH inserted AS (
+        INSERT INTO public.categories (workspace_id, name, "order", image)
+        SELECT new_workspace_id, name, "order", image 
+        FROM public.categories WHERE workspace_id = template_ws_id
+        RETURNING id as new_cat_id, name as i_cat_name
+    )
+    INSERT INTO tmp_cat_map (new_id, old_id, cat_name)
+    SELECT i.new_cat_id, c.id, i.i_cat_name 
+    FROM inserted i 
+    JOIN public.categories c ON c.workspace_id = template_ws_id AND c.name = i.i_cat_name;
 
-    (new_workspace_id, 'יין אדום קברנה', 2, 1, cat_wine, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=200'),
-    (new_workspace_id, 'יין לבן חצי יבש', 1, 0, cat_wine, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=200'),
+    ---------- 4. CLONE LOCATIONS & MAP IDs ----------
+    CREATE TEMP TABLE tmp_loc_map (old_id UUID, new_id UUID, loc_name TEXT) ON COMMIT DROP;
     
-    (new_workspace_id, 'קוקה קולה זירו (שישיה)', 2, 1, cat_drinks, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1622483767028-fd16792bf3ee?w=200'),
-    (new_workspace_id, 'מים מינרלים (שישיה)', 3, 1, cat_drinks, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1523362249712-421b1b11ca3c?w=200'),
-    (new_workspace_id, 'מיץ תפוזים פריגת', 1, 1, cat_drinks, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1600271886742-f049dd45fba8?w=200'),
+    WITH inserted AS (
+        INSERT INTO public.locations (workspace_id, name, "order", image)
+        SELECT new_workspace_id, name, "order", image 
+        FROM public.locations WHERE workspace_id = template_ws_id
+        RETURNING id as new_loc_id, name as i_loc_name
+    )
+    INSERT INTO tmp_loc_map (new_id, old_id, loc_name)
+    SELECT i.new_loc_id, l.id, i.i_loc_name 
+    FROM inserted i 
+    JOIN public.locations l ON l.workspace_id = template_ws_id AND l.name = i.i_loc_name;
 
-    (new_workspace_id, 'חזה עוף חתוך', 2, 1, cat_veg, loc_fridge, store_meat, '', 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=200'),
-    (new_workspace_id, 'פפריקה מתוקה', 1, 1, cat_veg, loc_pantry, store_spice, '', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200'),
-    (new_workspace_id, 'מלח דק', 2, 1, cat_veg, loc_pantry, store_super, '', 'https://images.unsplash.com/photo-1514986882353-84725049fb92?w=200');
+    ---------- 5. CLONE STORES & MAP IDs ----------
+    CREATE TEMP TABLE tmp_store_map (old_id UUID, new_id UUID, store_name TEXT) ON COMMIT DROP;
+    
+    WITH inserted AS (
+        INSERT INTO public.stores (workspace_id, name, "order", image)
+        SELECT new_workspace_id, name, "order", image 
+        FROM public.stores WHERE workspace_id = template_ws_id
+        RETURNING id as new_store_id, name as i_store_name
+    )
+    INSERT INTO tmp_store_map (new_id, old_id, store_name)
+    SELECT i.new_store_id, s.id, i.i_store_name 
+    FROM inserted i 
+    JOIN public.stores s ON s.workspace_id = template_ws_id AND s.name = i.i_store_name;
 
-  RETURN NEW;
+    ---------- 6. CLONE PRODUCTS ----------
+    INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku, image, purchase_url, price)
+    SELECT 
+        new_workspace_id, 
+        p.name, 
+        p.target_quantity, 
+        p.current_quantity, 
+        cm.new_id, 
+        lm.new_id, 
+        sm.new_id, 
+        p.sku, 
+        p.image, 
+        p.purchase_url, 
+        p.price
+    FROM public.products p
+    LEFT JOIN tmp_cat_map cm ON cm.old_id = p.category_id
+    LEFT JOIN tmp_loc_map lm ON lm.old_id = p.location_id
+    LEFT JOIN tmp_store_map sm ON sm.old_id = p.store_id
+    WHERE p.workspace_id = template_ws_id;
+
+    RETURN new;
 END;
 $$;
+
+-- 3. RE-BIND THE TRIGGER
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

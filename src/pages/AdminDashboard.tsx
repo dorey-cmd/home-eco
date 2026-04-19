@@ -151,7 +151,7 @@ const AdminDashboard = () => {
                   <Building size={16} /> מרחבים פעילים: {getWorkspacesCount(p.id)}
                 </div>
                 
-                {p.email !== 'dorey@gor-ziv.com' && (
+                {p.email !== 'dorey@gor-ziv.com' && p.email !== 'default-home@gor-ziv.com' && (
                   <button 
                     className="glass-button secondary p-2 text-danger flex items-center gap-1"
                     onClick={() => handleAction('deleteUser', p.id)}

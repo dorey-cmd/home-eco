@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { supabase } from '../supabase';
+import { useNavigate } from 'react-router-dom';
 
 const CONSENT_TEXT = 'אני מאשר/ת קבלת עדכונים, טיפים ומבצעים מ-RakBuy';
 const CONSENT_DISCLAIMER = 'אנחנו שומרים על פרטיותך. ניתן להסיר את עצמך מרשימת הדיוור בכל עת.';
@@ -7,6 +8,7 @@ const FORM_VERSION = 'signup-form-v1';
 const PRIVACY_POLICY_VERSION = '1.0';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -98,6 +100,7 @@ const Login = () => {
           password,
         });
         if (error) throw error;
+        navigate('/');
       }
     } catch (error: any) {
       console.error('Auth error', error.message);
