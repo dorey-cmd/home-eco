@@ -137,6 +137,16 @@ const InventoryList = () => {
       )}
 
       {isScanning && (
+        <BarcodeScanner 
+          onResult={(decodedText) => {
+            setSearchTerm(decodedText);
+            setIsScanning(false);
+          }} 
+          onClose={() => setIsScanning(false)} 
+        />
+      )}
+
+      <div className={viewMode === 'grid' ? 'product-grid' : ''}>
         {filteredProducts.map(p => {
           if (viewMode === 'list') {
             return (
