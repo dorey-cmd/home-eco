@@ -124,86 +124,78 @@ const AddEditProduct = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
         
-        {/* Top Header - Large Cover Image */}
-        <div style={{ width: '100%', height: '260px', borderRadius: '16px', overflow: 'hidden', position: 'relative', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
-          {formData.image ? (
-            <img src={formData.image} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', background: 'var(--rakbuy-blue-light)' }}>
-              <Camera size={48} style={{ opacity: 0.5 }} />
-              <span className="mt-2 font-bold opacity-50">אין תמונה למוצר</span>
-            </div>
-          )}
-          <label className="absolute bottom-4 right-4 glass-button p-3" style={{ borderRadius: '50%', background: 'rgba(255,255,255,0.95)', color: 'var(--rakbuy-navy)', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
-            <Camera size={24} />
-            <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleImageCapture} />
-          </label>
-        </div>
+        {/* Top Header - Image 50% and Quantities 50% next to it! */}
+        <div className="flex gap-4 mb-2">
+          {/* Half Size Image */}
+          <div style={{ flex: 1, height: '180px', borderRadius: '16px', overflow: 'hidden', position: 'relative', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
+            {formData.image ? (
+              <img src={formData.image} alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', background: 'var(--rakbuy-blue-light)' }}>
+                <Camera size={36} style={{ opacity: 0.5 }} />
+                <span className="mt-2 font-bold opacity-50 text-sm">אין תמונה</span>
+              </div>
+            )}
+            <label className="absolute bottom-2 right-2 glass-button p-2" style={{ borderRadius: '50%', background: 'rgba(255,255,255,0.95)', color: 'var(--rakbuy-navy)', cursor: 'pointer', boxShadow: '0 2px 10px rgba(0,0,0,0.15)' }}>
+              <Camera size={18} />
+              <input type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleImageCapture} />
+            </label>
+          </div>
 
-        {/* Name and Price */}
-        <div className="flex flex-col gap-3 mt-3">
-           <input className="glass-input text-center" style={{ fontWeight: '900', fontSize: '1.6rem', padding: '20px', background: 'var(--glass-bg)' }} value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="שם המוצר..." />
-           
-           <div className="flex items-center gap-3">
-             <div className="glass-panel text-center flex-1" style={{ padding: '16px' }}>
-               <label className="text-secondary font-bold text-xs block mb-2">מחיר פריט</label>
+          {/* Quantities Stacked */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="glass-panel text-center" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px' }}>
+               <label className="text-secondary font-bold text-xs block mb-1">כמות בפועל</label>
                <div className="flex items-center justify-center gap-1">
-                 <span className="font-bold text-secondary text-lg">₪</span>
-                 <input type="number" step="0.1" className="glass-input text-center" style={{ width: '80px', fontSize: '1.4rem', background: 'transparent', border: 'none', padding: 0, fontWeight: 'bold' }} value={formData.price || ''} onChange={e => setFormData({...formData, price: Number(e.target.value)})} placeholder="0.0" />
-               </div>
-             </div>
-             
-             <div className="glass-panel text-center flex-1" style={{ padding: '16px' }}>
-               <label className="text-secondary font-bold text-xs block mb-2">מק"ט / ברקוד</label>
-               <div className="flex items-center justify-center gap-2">
-                 <input className="glass-input text-center" style={{ width: '80px', fontSize: '1.1rem', background: 'transparent', border: 'none', padding: 0, fontWeight: 'bold' }} value={formData.sku || ''} onChange={e => setFormData({...formData, sku: e.target.value})} placeholder="סרוק..." />
-                 <button className="text-accent" onClick={() => setIsScanning(true)}>
-                   <Barcode size={24} />
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: Math.max(0, (p.currentQuantity || 0) - 1)}))} style={{ width: '28px', height: '28px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Minus size={16} />
                  </button>
-               </div>
-             </div>
-           </div>
-        </div>
-
-        {/* Quantities in a highly visible card */}
-        <div className="glass-panel mt-3" style={{ padding: '24px 16px' }}>
-          <h3 className="text-center font-bold text-secondary mb-6" style={{ fontSize: '1.1rem' }}>ניהול מלאי</h3>
-          
-          <div className="flex flex-col gap-5">
-            <div className="flex items-center justify-between px-2">
-               <div>
-                 <label className="text-primary font-bold block" style={{ fontSize: '1rem' }}>יחידות במלאי</label>
-                 <span className="text-secondary text-xs">כמה כרגע יש בפועל</span>
-               </div>
-               <div className="flex items-center gap-3 bg-white rounded-full p-1" style={{ border: '2px solid var(--glass-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: Math.max(0, (p.currentQuantity || 0) - 1)}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                   <Minus size={22} />
-                 </button>
-                 <span className="font-black text-2xl w-10 text-center" style={{ color: 'var(--rakbuy-navy)' }}>{formData.currentQuantity || 0}</span>
-                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: (p.currentQuantity || 0) + 1}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-navy)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(26, 43, 94, 0.2)' }}>
-                   <Plus size={22} />
+                 <span className="font-black text-xl w-8 text-center">{formData.currentQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: (p.currentQuantity || 0) + 1}))} style={{ width: '28px', height: '28px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-navy)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Plus size={16} />
                  </button>
                </div>
             </div>
 
-            <div style={{ height: '1px', background: 'var(--glass-border)', margin: '4px 0' }}></div>
-
-            <div className="flex items-center justify-between px-2">
-               <div>
-                 <label className="text-primary font-bold block" style={{ fontSize: '1rem' }}>כמות יעד עתידית</label>
-                 <span className="text-secondary text-xs">כמה היית רוצה שיהיה</span>
-               </div>
-               <div className="flex items-center gap-3 bg-white rounded-full p-1" style={{ border: '2px solid var(--glass-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: Math.max(0, (p.targetQuantity || 0) - 1)}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                   <Minus size={22} />
+            <div className="glass-panel text-center" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px' }}>
+               <label className="text-secondary font-bold text-xs block mb-1">כמות יעד</label>
+               <div className="flex items-center justify-center gap-1">
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: Math.max(0, (p.targetQuantity || 0) - 1)}))} style={{ width: '28px', height: '28px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Minus size={16} />
                  </button>
-                 <span className="font-black text-2xl w-10 text-center" style={{ color: 'var(--rakbuy-green-dark)' }}>{formData.targetQuantity || 0}</span>
-                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: (p.targetQuantity || 0) + 1}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(46, 204, 113, 0.3)' }}>
-                   <Plus size={22} />
+                 <span className="font-black text-xl w-8 text-center text-rakbuy-green">{formData.targetQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: (p.targetQuantity || 0) + 1}))} style={{ width: '28px', height: '28px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Plus size={16} />
                  </button>
                </div>
             </div>
           </div>
+        </div>
+
+        {/* Name Input */}
+        <div className="mb-2">
+           <input className="glass-input text-center w-full" style={{ fontWeight: '900', fontSize: '1.4rem', padding: '16px', background: 'var(--glass-bg)' }} value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="שם המוצר..." />
+        </div>
+
+        {/* Price and SKU on ONE ROW */}
+        <div className="flex gap-3 mb-2">
+           <div className="glass-panel flex-1 flex flex-col justify-center px-3 py-2" style={{ maxWidth: '40%' }}>
+             <label className="text-secondary font-bold text-xs mb-1 block">מחיר</label>
+             <div className="flex items-center gap-1 w-full">
+               <span className="font-bold text-secondary text-lg leading-none">₪</span>
+               <input type="number" step="0.1" className="glass-input flex-1 text-left" style={{ fontSize: '1.2rem', background: 'transparent', border: 'none', padding: 0, fontWeight: 'bold', width: '100%', minWidth: 0, direction: 'ltr' }} value={formData.price || ''} onChange={e => setFormData({...formData, price: Number(e.target.value)})} placeholder="1999.50" />
+             </div>
+           </div>
+           
+           <div className="glass-panel flex-1 flex flex-col justify-center px-3 py-2" style={{ minWidth: '60%' }}>
+             <div className="flex items-center justify-between mb-1">
+               <label className="text-secondary font-bold text-xs block">מק"ט / ברקוד</label>
+               <button className="text-accent bg-transparent border-none p-0 cursor-pointer" onClick={() => setIsScanning(true)}>
+                 <Barcode size={18} />
+               </button>
+             </div>
+             <input className="glass-input w-full text-right" style={{ fontSize: '1.1rem', background: 'transparent', border: 'none', padding: 0, fontWeight: 'bold' }} value={formData.sku || ''} onChange={e => setFormData({...formData, sku: e.target.value})} placeholder="מספר ברקוד ארוך" />
+           </div>
         </div>
 
         {/* Dropdowns logic */}

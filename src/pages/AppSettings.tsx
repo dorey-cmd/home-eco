@@ -40,18 +40,17 @@ const AppSettings = () => {
     <div style={{ paddingBottom: '90px' }}>
       <h1 className="page-title mb-4">הגדרות מתקדמות</h1>
       
-      <ActionButton icon={User} title="ניהול פרטים אישיים" description="צפייה ועריכת שם, אמצעי התקשרות ופרופיל" path="/settings/profile" />
-
       <div className="mb-4">
         <p className="text-secondary" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>
           הגדר את מבנה הנתונים של היומיום. קבע שמות וסדר הופעה לשימוש נוח.
         </p>
       </div>
-      
-      <ActionButton icon={Building} title="ניהול סביבת תפעול" description="הקמת מרחבים נפרדים, מעבר בין משתמשים והזמנת שותפים לניהול" path="/settings/workspaces" />
+
       <ActionButton icon={Layers} title="ניהול קטגוריות" description="מוצרי חלב, בשר, פירות וירקות, יבשים..." path="/settings/categories" />
       <ActionButton icon={Store} title={isBusiness ? "ניהול ספקים" : "ניהול חנויות קנייה"} description={isBusiness ? "עריכת הספקים הקבועים שלך" : "שופרסל, רמי לוי, ירקניה מקומית..."} path="/settings/stores" />
       <ActionButton icon={MapPin} title={isBusiness ? "ניהול סניפים ומתחמים" : "ניהול ארונות אחסון"} description={isBusiness ? "הגדרת רשימות לפי סניפי הרשת" : "מקרר, מזווה, ארון חומרי הניקוי..."} path="/settings/locations" />
+      <ActionButton icon={User} title="ניהול פרטים אישיים" description="צפייה ועריכת שם, אמצעי התקשרות ופרופיל" path="/settings/profile" />
+      <ActionButton icon={Building} title="ניהול סביבות תפעול" description="הקמת מרחבים נפרדים, מעבר בין משתמשים והזמנת שותפים לניהול" path="/settings/workspaces" />
 
       {profile?.role === 'ADMIN' && (
         <div className="mt-8 pt-4" style={{ borderTop: '1px solid var(--glass-border)' }}>

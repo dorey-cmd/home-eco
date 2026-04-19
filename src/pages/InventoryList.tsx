@@ -13,6 +13,7 @@ const InventoryList = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStore, setFilterStore] = useState('all');
   const [isScanning, setIsScanning] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   const { locations, categories, stores } = useContext(AppContext);
@@ -61,6 +62,15 @@ const InventoryList = () => {
         <h1 className="page-title" style={{ marginBottom: 0 }}>המלאי שלי</h1>
         <div className="flex gap-2 bg-white rounded-xl p-1" style={{ border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }}>
           <button 
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            style={{ padding: '6px', borderRadius: '8px', border: 'none', background: isSearchOpen ? 'var(--rakbuy-blue-light)' : 'transparent', color: isSearchOpen ? 'var(--rakbuy-navy)' : 'var(--text-secondary)', cursor: 'pointer' }}
+          >
+            <Search size={20} />
+          </button>
+          
+          <div style={{ width: '1px', background: 'var(--glass-border)', margin: '4px 0' }}></div>
+          
+          <button 
             onClick={() => setViewMode('grid')}
             style={{ padding: '6px', borderRadius: '8px', border: 'none', background: viewMode === 'grid' ? 'var(--rakbuy-blue-light)' : 'transparent', color: viewMode === 'grid' ? 'var(--rakbuy-navy)' : 'var(--text-secondary)', cursor: 'pointer' }}
           >
@@ -75,64 +85,58 @@ const InventoryList = () => {
         </div>
       </div>
       
-      <div className="glass-panel flex items-center px-4 mb-3" style={{ padding: '0 12px' }}>
-        <Search size={20} className="text-secondary" />
-        <input 
-          type="text" 
-          placeholder="חיפוש מוצר או ברקוד..." 
-          className="glass-input flex-1"
-          style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
-        <button onClick={() => setIsScanning(true)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px' }}>
-          <Barcode size={20} />
-        </button>
-      </div>
+      {isSearchOpen && (
+        <div className="mb-4 animate-fade-in">
+          <div className="glass-panel flex items-center px-4 mb-3" style={{ padding: '0 12px' }}>
+            <Search size={20} className="text-secondary" />
+            <input 
+              type="text" 
+              placeholder="חיפוש מוצר או ברקוד..." 
+              className="glass-input flex-1"
+              style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            <button onClick={() => setIsScanning(true)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px' }}>
+              <Barcode size={20} />
+            </button>
+          </div>
 
-      {isScanning && (
-        <BarcodeScanner 
-          onResult={(decodedText) => {
-            setSearchTerm(decodedText);
-            setIsScanning(false);
-          }} 
-          onClose={() => setIsScanning(false)} 
-        />
+          <div className="flex gap-2" style={{ overflowX: 'auto', paddingBottom: '4px' }}>
+            <select 
+              className="glass-input" 
+              style={{ padding: '8px', fontSize: '0.85rem' }} 
+              value={filterLocation} 
+              onChange={e => setFilterLocation(e.target.value)}
+            >
+              <option value="all">מיקומים</option>
+              {locations.map(loc => <option key={loc.id} value={loc.id}>{loc.name}</option>)}
+            </select>
+            
+            <select 
+              className="glass-input" 
+              style={{ padding: '8px', fontSize: '0.85rem' }} 
+              value={filterCategory} 
+              onChange={e => setFilterCategory(e.target.value)}
+            >
+              <option value="all">קטגוריות</option>
+              {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+            </select>
+            
+            <select 
+              className="glass-input" 
+              style={{ padding: '8px', fontSize: '0.85rem' }} 
+              value={filterStore} 
+              onChange={e => setFilterStore(e.target.value)}
+            >
+              <option value="all">חנויות</option>
+              {stores.map(store => <option key={store.id} value={store.id}>{store.name}</option>)}
+            </select>
+          </div>
+        </div>
       )}
 
-      <div className="flex gap-2 mb-4" style={{ overflowX: 'auto', paddingBottom: '4px' }}>
-        <select 
-          className="glass-input" 
-          style={{ padding: '8px', fontSize: '0.85rem' }} 
-          value={filterLocation} 
-          onChange={e => setFilterLocation(e.target.value)}
-        >
-          <option value="all">כל המיקומים</option>
-          {locations.map(loc => <option key={loc.id} value={loc.id}>{loc.name}</option>)}
-        </select>
-        
-        <select 
-          className="glass-input" 
-          style={{ padding: '8px', fontSize: '0.85rem' }} 
-          value={filterCategory} 
-          onChange={e => setFilterCategory(e.target.value)}
-        >
-          <option value="all">כל הקטגוריות</option>
-          {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-        </select>
-        
-        <select 
-          className="glass-input" 
-          style={{ padding: '8px', fontSize: '0.85rem' }} 
-          value={filterStore} 
-          onChange={e => setFilterStore(e.target.value)}
-        >
-          <option value="all">כל החנויות</option>
-          {stores.map(store => <option key={store.id} value={store.id}>{store.name}</option>)}
-        </select>
-      </div>
-
-      <div className={viewMode === 'grid' ? 'product-grid' : ''}>
+      {isScanning && (
         {filteredProducts.map(p => {
           if (viewMode === 'list') {
             return (
@@ -193,9 +197,8 @@ const InventoryList = () => {
                   <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '36px', height: '36px', fontSize: '1.2rem', padding: 0 }}>
                     <Minus size={18} />
                   </button>
-                  <div className="flex flex-col items-center flex-1">
-                    <span className="q-val font-bold" style={{ fontSize: '1.2rem', padding: '0 4px' }}>{p.currentQuantity}</span>
-                    <span className="text-xs text-secondary font-bold" style={{ marginTop: '-4px' }}>מתוך {p.targetQuantity}</span>
+                  <div className="flex items-center justify-center flex-1">
+                    <span className="q-val font-bold" style={{ fontSize: '1.2rem', padding: '0 4px', direction: 'ltr' }}>{p.currentQuantity} <span className="text-secondary text-sm font-bold">/ {p.targetQuantity}</span></span>
                   </div>
                   <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '36px', height: '36px', fontSize: '1.2rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white' }}>
                     <Plus size={18} />

@@ -27,9 +27,33 @@ export const AppContext = React.createContext<{
 
 const BottomNav = () => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (window.scrollY > lastScrollY && window.scrollY > 50) {
+            setIsVisible(false);
+          } else {
+            setIsVisible(true);
+          }
+          lastScrollY = window.scrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="bottom-nav glass-panel">
+    <nav className={`bottom-nav glass-panel ${isVisible ? '' : 'nav-hidden'}`}>
       <NavLink to="/" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         <Home />
         <span>מלאי</span>
