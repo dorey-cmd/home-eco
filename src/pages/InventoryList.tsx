@@ -205,13 +205,17 @@ const InventoryList = () => {
                 <div className="font-bold truncate" style={{ fontSize: '1rem', color: 'var(--text-color)', marginBottom: '2px' }}>{p.name}</div>
                 
                 <div className="quantity-control w-full" style={{ padding: '4px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, flexShrink: 0 }}>
+                  <button className="btn-q" onClick={() => changeQuantity(p, -1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: '#e74c3c', color: 'white', flexShrink: 0, borderRadius: '8px' }}>
                     <Minus size={16} />
                   </button>
                   <div className="flex items-center justify-center flex-1" style={{ minWidth: 0 }}>
-                    <span className="q-val" style={{ fontSize: '1.2rem', padding: '0 4px', direction: 'ltr', fontWeight: '900', whiteSpace: 'nowrap' }}>{p.currentQuantity} <span className="text-secondary" style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>/ {p.targetQuantity}</span></span>
+                    <span className="q-val" style={{ fontSize: '1.2rem', padding: '0 4px', direction: 'ltr', fontWeight: '900', whiteSpace: 'nowrap' }}>
+                      <span style={{ color: (p.currentQuantity || 0) < (p.targetQuantity || 0) ? '#e74c3c' : 'var(--rakbuy-green)' }}>{p.currentQuantity || 0}</span> 
+                      <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--rakbuy-navy)', margin: '0 2px' }}>/</span> 
+                      <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--rakbuy-navy)' }}>{p.targetQuantity || 0}</span>
+                    </span>
                   </div>
-                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white', flexShrink: 0 }}>
+                  <button className="btn-q" onClick={() => changeQuantity(p, 1)} style={{ width: '32px', height: '32px', fontSize: '1rem', padding: 0, background: 'var(--rakbuy-green)', color: 'white', flexShrink: 0, borderRadius: '8px' }}>
                     <Plus size={16} />
                   </button>
                 </div>

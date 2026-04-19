@@ -147,11 +147,11 @@ const AddEditProduct = () => {
             <div className="glass-panel text-center" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '12px 8px' }}>
                <label className="text-secondary font-bold text-xs block mb-2">כמות בפועל</label>
                <div className="flex items-center justify-center gap-2">
-                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: Math.max(0, (p.currentQuantity || 0) - 1)}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: Math.max(0, (p.currentQuantity || 0) - 1)}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '8px', border: 'none', background: '#e74c3c', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                    <Minus size={18} />
                  </button>
-                 <span className="font-black text-2xl w-10 text-center">{formData.currentQuantity || 0}</span>
-                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: (p.currentQuantity || 0) + 1}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-navy)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <span className="font-black text-2xl w-10 text-center" style={{ color: (formData.currentQuantity || 0) < (formData.targetQuantity || 0) ? '#e74c3c' : 'var(--rakbuy-green)' }}>{formData.currentQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: (p.currentQuantity || 0) + 1}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '8px', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                    <Plus size={18} />
                  </button>
                </div>
@@ -160,11 +160,11 @@ const AddEditProduct = () => {
             <div className="glass-panel text-center" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '12px 8px' }}>
                <label className="text-secondary font-bold text-xs block mb-2">כמות יעד</label>
                <div className="flex items-center justify-center gap-2">
-                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: Math.max(0, (p.targetQuantity || 0) - 1)}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: Math.max(0, (p.targetQuantity || 0) - 1)}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '8px', border: 'none', background: '#e74c3c', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                    <Minus size={18} />
                  </button>
-                 <span className="font-black text-2xl w-10 text-center text-rakbuy-green">{formData.targetQuantity || 0}</span>
-                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: (p.targetQuantity || 0) + 1}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <span className="font-black text-2xl w-10 text-center" style={{ color: 'var(--rakbuy-navy)' }}>{formData.targetQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: (p.targetQuantity || 0) + 1}))} style={{ width: '32px', height: '32px', fontSize: '1.2rem', borderRadius: '8px', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                    <Plus size={18} />
                  </button>
                </div>
