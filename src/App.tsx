@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { Home, ShoppingCart, Plus, Settings, BarChart3, ChevronDown } from 'lucide-react';
+import { Home, ShoppingCart, Plus, Settings, BarChart3, Building } from 'lucide-react';
 
 import InventoryList from './pages/InventoryList';
 import ShoppingList from './pages/ShoppingList';
@@ -102,10 +102,21 @@ function AppContent() {
           <img src="/rakbuy-logo.png" alt="RakBuy" className="app-header-logo" style={{ margin: 0 }} />
           
           {workspaces.length > 1 && (
-            <div className="relative" style={{ maxWidth: '140px' }}>
+            <div className="relative">
+              <div className="flex items-center gap-2" style={{ cursor: 'pointer' }}>
+                <div style={{ background: 'var(--glass-bg)', padding: '6px', borderRadius: '50%', border: '1px solid var(--glass-border)' }}>
+                  <Building size={20} style={{ color: 'var(--rakbuy-green)' }} />
+                </div>
+                <span className="text-sm font-bold text-secondary text-right" style={{ maxWidth: '120px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', direction: 'rtl' }}>
+                  {activeWorkspace?.owner_id !== user?.id && activeWorkspace?.owner_email ? 
+                    `${activeWorkspace.name} - ${activeWorkspace.owner_email}` : 
+                    activeWorkspace?.name}
+                </span>
+              </div>
+              
               <select 
-                className="glass-input appearance-none"
-                style={{ background: 'var(--glass-bg)', border: 'none', fontWeight: 'bold', fontSize: '0.8rem', padding: '4px 10px 4px 28px', boxShadow: 'none' }}
+                className="absolute inset-0 w-full h-full opacity-0"
+                style={{ cursor: 'pointer' }}
                 value={activeWorkspace?.id || ''}
                 onChange={(e) => {
                     setActiveWorkspaceId(e.target.value);
@@ -113,12 +124,11 @@ function AppContent() {
                 }}
               >
                 {workspaces.map((ws) => (
-                  <option key={ws.id} value={ws.id} style={{ color: 'var(--text-color)' }}>
-                    {ws.name}
+                  <option key={ws.id} value={ws.id}>
+                    {ws.owner_id !== user?.id ? `${ws.name} - ${ws.owner_email}` : ws.name}
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute left-2 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" size={14} />
             </div>
           )}
         </header>

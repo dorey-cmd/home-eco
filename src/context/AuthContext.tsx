@@ -13,6 +13,7 @@ export interface Workspace {
   id: string;
   name: string;
   owner_id: string;
+  owner_email?: string;
 }
 
 interface AuthContextType {
@@ -79,11 +80,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .from('workspaces')
           .select('*');
 
+        const ownerIds = [...new Set((workspacesData || []).map(w => w.owner_id))];
+        const { data: profilesData } = await supabase.from('profiles').select('id, email').in('id', ownerIds);
+
         if (mounted) {
           setUser(currentUser);
           setProfile(profileData as UserProfile);
           
-          const wsList = (workspacesData || []) as Workspace[];
+          const wsList = (workspacesData || []).map(w => {
+            const ownerProfile = profilesData?.find(p => p.id === w.owner_id);
+            return { ...w, owner_email: ownerProfile?.email };
+          }) as Workspace[];
+          
           setWorkspaces(wsList);
           
           if (wsList.length > 0) {
