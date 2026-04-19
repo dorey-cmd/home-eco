@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Camera, Barcode, Save, Trash2 } from 'lucide-react';
+import { Camera, Barcode, Save, Trash2, Plus, Minus } from 'lucide-react';
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../api';
 import type { Product } from '../api';
 import { supabase } from '../supabase';
@@ -166,17 +166,42 @@ const AddEditProduct = () => {
         </div>
 
         {/* Quantities in a highly visible card */}
-        <div className="glass-panel mt-3" style={{ padding: '20px 16px' }}>
-          <h3 className="text-center font-bold text-secondary mb-4" style={{ fontSize: '1rem' }}>ניהול מלאי</h3>
-          <div className="flex items-center justify-center gap-6">
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <label className="text-secondary" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '8px' }}>מוצרים שיש כרגע</label>
-              <input type="number" className="glass-input text-center" style={{ padding: '4px', fontSize: '2.5rem', background: 'transparent', border: 'none', fontWeight: '900', width: '100%', color: 'var(--rakbuy-navy)' }} value={formData.currentQuantity} onChange={e => setFormData({...formData, currentQuantity: Number(e.target.value)})} />
+        <div className="glass-panel mt-3" style={{ padding: '24px 16px' }}>
+          <h3 className="text-center font-bold text-secondary mb-6" style={{ fontSize: '1.1rem' }}>ניהול מלאי</h3>
+          
+          <div className="flex flex-col gap-5">
+            <div className="flex items-center justify-between px-2">
+               <div>
+                 <label className="text-primary font-bold block" style={{ fontSize: '1rem' }}>יחידות במלאי</label>
+                 <span className="text-secondary text-xs">כמה כרגע יש בפועל</span>
+               </div>
+               <div className="flex items-center gap-3 bg-white rounded-full p-1" style={{ border: '2px solid var(--glass-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: Math.max(0, (p.currentQuantity || 0) - 1)}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Minus size={22} />
+                 </button>
+                 <span className="font-black text-2xl w-10 text-center" style={{ color: 'var(--rakbuy-navy)' }}>{formData.currentQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, currentQuantity: (p.currentQuantity || 0) + 1}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-navy)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(26, 43, 94, 0.2)' }}>
+                   <Plus size={22} />
+                 </button>
+               </div>
             </div>
-            <div style={{ width: '2px', height: '80px', background: 'var(--glass-border)', borderRadius: '2px' }}></div>
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <label className="text-secondary" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '8px' }}>כמות יעד רצויה</label>
-              <input type="number" className="glass-input text-center" style={{ padding: '4px', fontSize: '2.5rem', background: 'transparent', border: 'none', fontWeight: '900', width: '100%', color: 'var(--rakbuy-green)' }} value={formData.targetQuantity} onChange={e => setFormData({...formData, targetQuantity: Number(e.target.value)})} />
+
+            <div style={{ height: '1px', background: 'var(--glass-border)', margin: '4px 0' }}></div>
+
+            <div className="flex items-center justify-between px-2">
+               <div>
+                 <label className="text-primary font-bold block" style={{ fontSize: '1rem' }}>כמות יעד עתידית</label>
+                 <span className="text-secondary text-xs">כמה היית רוצה שיהיה</span>
+               </div>
+               <div className="flex items-center gap-3 bg-white rounded-full p-1" style={{ border: '2px solid var(--glass-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: Math.max(0, (p.targetQuantity || 0) - 1)}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--bg-color)', color: 'var(--rakbuy-navy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Minus size={22} />
+                 </button>
+                 <span className="font-black text-2xl w-10 text-center" style={{ color: 'var(--rakbuy-green-dark)' }}>{formData.targetQuantity || 0}</span>
+                 <button type="button" onClick={() => setFormData(p => ({...p, targetQuantity: (p.targetQuantity || 0) + 1}))} style={{ width: '44px', height: '44px', fontSize: '1.5rem', borderRadius: '50%', border: 'none', background: 'var(--rakbuy-green)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(46, 204, 113, 0.3)' }}>
+                   <Plus size={22} />
+                 </button>
+               </div>
             </div>
           </div>
         </div>
