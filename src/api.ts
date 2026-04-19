@@ -62,7 +62,8 @@ const sortByOrder = (arr: any[]) => arr.sort((a, b) => (a.order || 0) - (b.order
 
 // --- PRODUCTS ---
 export const fetchProducts = async (): Promise<Product[]> => {
-    const { data, error } = await supabase.from('products').select('*');
+    const workspaceId = await getWorkspaceId();
+    const { data, error } = await supabase.from('products').select('*').eq('workspace_id', workspaceId);
     if (error) throw error;
     return (data || []).map(toCamel) as Product[];
 };
@@ -90,7 +91,8 @@ export const deleteProduct = async (id: string): Promise<any> => {
 
 // --- PURCHASES ---
 export const fetchPurchases = async (): Promise<Purchase[]> => {
-    const { data, error } = await supabase.from('purchases').select('*');
+    const workspaceId = await getWorkspaceId();
+    const { data, error } = await supabase.from('purchases').select('*').eq('workspace_id', workspaceId);
     if (error) throw error;
     return (data || []).map(toCamel) as Purchase[];
 };
@@ -105,7 +107,8 @@ export const addPurchase = async (p: Omit<Purchase, 'id'>): Promise<Purchase> =>
 
 // --- CATEGORIES ---
 export const fetchCategories = async (): Promise<Category[]> => {
-    const { data, error } = await supabase.from('categories').select('*');
+    const workspaceId = await getWorkspaceId();
+    const { data, error } = await supabase.from('categories').select('*').eq('workspace_id', workspaceId);
     if (error) throw error;
     return sortByOrder((data || []).map(toCamel));
 };
@@ -133,7 +136,8 @@ export const deleteCategory = async (id: string): Promise<any> => {
 
 // --- LOCATIONS ---
 export const fetchLocations = async (): Promise<Location[]> => {
-    const { data, error } = await supabase.from('locations').select('*');
+    const workspaceId = await getWorkspaceId();
+    const { data, error } = await supabase.from('locations').select('*').eq('workspace_id', workspaceId);
     if (error) throw error;
     return sortByOrder((data || []).map(toCamel));
 };
@@ -161,7 +165,8 @@ export const deleteLocation = async (id: string): Promise<any> => {
 
 // --- STORES ---
 export const fetchStores = async (): Promise<Store[]> => {
-    const { data, error } = await supabase.from('stores').select('*');
+    const workspaceId = await getWorkspaceId();
+    const { data, error } = await supabase.from('stores').select('*').eq('workspace_id', workspaceId);
     if (error) throw error;
     return sortByOrder((data || []).map(toCamel));
 };

@@ -29,12 +29,14 @@ DECLARE
   loc_clean UUID := gen_random_uuid();
   loc_laundry UUID := gen_random_uuid();
   loc_bath UUID := gen_random_uuid();
+  loc_general UUID := gen_random_uuid();
 
   store_super UUID := gen_random_uuid();
   store_veg UUID := gen_random_uuid();
   store_meat UUID := gen_random_uuid();
   store_pharm UUID := gen_random_uuid();
   store_spice UUID := gen_random_uuid();
+  store_general UUID := gen_random_uuid();
 BEGIN
   -- A. Create a profile entry
   INSERT INTO public.profiles (id, email, role)
@@ -56,6 +58,7 @@ BEGIN
 
   -- D. Insert Starter Kit Locations
   INSERT INTO public.locations (id, workspace_id, name, "order", image) VALUES
+    (loc_general, new_workspace_id, 'מיקום כללי', 0, 'https://images.unsplash.com/photo-1558222218-b7b54eede3f3?w=200'),
     (loc_fridge, new_workspace_id, 'מקרר', 1, 'https://images.unsplash.com/photo-1584285418504-01018e6ce6c9?w=200'),
     (loc_pantry, new_workspace_id, 'מזווה', 2, 'https://images.unsplash.com/photo-1590005022879-880290947ba9?w=200'),
     (loc_clean, new_workspace_id, 'ארון חומרי ניקוי', 3, 'https://images.unsplash.com/photo-1603522207198-8e6d9b5e527d?w=200'),
@@ -64,6 +67,7 @@ BEGIN
 
   -- E. Insert Starter Kit Stores
   INSERT INTO public.stores (id, workspace_id, name, "order", image) VALUES
+    (store_general, new_workspace_id, 'קניות כללי', 0, 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200'),
     (store_super, new_workspace_id, 'סופרמארקט', 1, 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200'),
     (store_veg, new_workspace_id, 'ירקניה שכונתית', 2, 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200'),
     (store_meat, new_workspace_id, 'קצב', 3, 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=200'),

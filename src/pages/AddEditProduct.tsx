@@ -16,17 +16,19 @@ const AddEditProduct = () => {
   const { profile } = useAuth();
   const isBusiness = profile?.role === 'BUSINESS';
   
-  // Find 'כללי' category to set as default if available
-  const generalCategory = categories.find(c => c.name === 'כללי') || categories[0];
+  // Find default categories, locations and stores
+  const generalCategory = categories.find(c => c.name === 'כללי') || categories.find(c => c.name === 'כללית') || categories[0];
+  const generalLocation = locations.find(l => l.name === 'מיקום כללי') || locations[0];
+  const generalStore = stores.find(s => s.name === 'קניות כללי') || stores.find(s => s.name === 'חנות כללית') || { id: '' };
 
   const [formData, setFormData] = useState<Partial<Product>>({
     name: '',
     targetQuantity: 1,
     currentQuantity: 0,
     price: 0,
-    locationId: locations[0]?.id || '',
+    locationId: generalLocation?.id || '',
     categoryId: generalCategory?.id || '',
-    storeId: '', // Default to empty (no store)
+    storeId: generalStore?.id || '', // Default to 'קניות כללי'
     sku: '',
     image: '',
     purchaseUrl: ''

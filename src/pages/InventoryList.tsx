@@ -46,7 +46,7 @@ const InventoryList = () => {
   };
 
   const filteredProducts = products.filter(p => {
-    const matchesSearch = p.name.includes(searchTerm) || p.sku.includes(searchTerm);
+    const matchesSearch = p.name.includes(searchTerm) || (p.sku || '').includes(searchTerm);
     const matchesLocation = filterLocation === 'all' || p.locationId === filterLocation;
     const matchesCategory = filterCategory === 'all' || p.categoryId === filterCategory;
     const matchesStore = filterStore === 'all' || p.storeId === filterStore;
