@@ -70,6 +70,7 @@ const Login = () => {
             setMsg({ text: 'הרשמה בוצעה בהצלחה! שלחנו לך הודעת אימות למייל. לחץ עליה כדי להיכנס.', type: 'info' });
         } else {
             setMsg({ text: 'ברוך הבא ל-RakBuy! ההרשמה בוצעה בהצלחה.', type: 'success' });
+            navigate('/');
         }
 
         // Background trigger: Send to CRM + Webhook with full context
