@@ -76,14 +76,14 @@ BEGIN
 
   -- F. Insert Starter Kit Products
   INSERT INTO public.products (workspace_id, name, target_quantity, current_quantity, category_id, location_id, store_id, sku, image) VALUES
-    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200'),
-    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', 'https://images.unsplash.com/photo-1604977042946-1eecc30f6532?w=200'),
-    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://images.unsplash.com/photo-1618512496248-a0e28e4695eb?w=200'),
-    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=200'),
+    (new_workspace_id, 'עגבניות', 2, 1, cat_veg, loc_fridge, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    (new_workspace_id, 'מלפפונים', 2, 2, cat_veg, loc_fridge, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/9/96/Cucumber_and_slices.jpg'),
+    (new_workspace_id, 'בצל יבש', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/2/25/Onion_on_White.JPG'),
+    (new_workspace_id, 'תפוחי אדמה', 1, 1, cat_veg, loc_pantry, store_veg, '', 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Patates.jpg'),
     
-    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', 'https://images.unsplash.com/photo-1585421514738-0245a499a0ed?w=200'),
-    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', 'https://images.unsplash.com/photo-1584820927598-cffecc6555cc?w=200'),
-    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', 'https://images.unsplash.com/photo-1610557892470-55d9e18b0ee2?w=200'),
+    (new_workspace_id, 'אקונומיקה', 2, 1, cat_clean, loc_clean, store_super, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Chlorine_bleach.jpg/800px-Chlorine_bleach.jpg'),
+    (new_workspace_id, 'נוזל רצפות', 1, 1, cat_clean, loc_clean, store_super, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Floor_cleaner.jpg/800px-Floor_cleaner.jpg'),
+    (new_workspace_id, 'נוזל כביסה', 1, 0, cat_clean, loc_laundry, store_pharm, '', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Liquid_detergent_%282%29.jpg/800px-Liquid_detergent_%282%29.jpg'),
     (new_workspace_id, 'מרכך כביסה', 1, 1, cat_clean, loc_laundry, store_pharm, '', 'https://images.unsplash.com/photo-1520336214828-5b3ea7090887?w=200'),
     
     (new_workspace_id, 'חלב 3%', 3, 2, cat_dairy, loc_fridge, store_super, '', 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200'),
