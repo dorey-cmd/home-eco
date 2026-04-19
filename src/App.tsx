@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { Home, ShoppingCart, Plus, Settings, BarChart3 } from 'lucide-react';
+import { Home, ShoppingCart, Plus, Settings, BarChart3, ChevronDown } from 'lucide-react';
 
 import InventoryList from './pages/InventoryList';
 import ShoppingList from './pages/ShoppingList';
@@ -77,7 +77,7 @@ function AppContent() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
-  const { user } = useAuth();
+  const { user, workspaces, activeWorkspace, setActiveWorkspaceId } = useAuth();
 
   const refreshLookups = async () => {
     if (!user) return;
@@ -98,8 +98,29 @@ function AppContent() {
   return (
     <AppContext.Provider value={{ categories, locations, stores, refreshLookups }}>
       <div className="app-container">
-        <header className="app-header">
-          <img src="/rakbuy-logo.png" alt="RakBuy" className="app-header-logo" />
+        <header className="app-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 16px' }}>
+          <img src="/rakbuy-logo.png" alt="RakBuy" className="app-header-logo" style={{ margin: 0 }} />
+          
+          {workspaces.length > 1 && (
+            <div className="relative" style={{ maxWidth: '140px' }}>
+              <select 
+                className="glass-input appearance-none"
+                style={{ background: 'var(--glass-bg)', border: 'none', fontWeight: 'bold', fontSize: '0.8rem', padding: '4px 10px 4px 28px', boxShadow: 'none' }}
+                value={activeWorkspace?.id || ''}
+                onChange={(e) => {
+                    setActiveWorkspaceId(e.target.value);
+                    window.location.reload();
+                }}
+              >
+                {workspaces.map((ws) => (
+                  <option key={ws.id} value={ws.id} style={{ color: 'var(--text-color)' }}>
+                    {ws.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute left-2 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" size={14} />
+            </div>
+          )}
         </header>
         <main className="main-content">
           <Routes>
