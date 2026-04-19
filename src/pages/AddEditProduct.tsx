@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useZxing } from 'react-zxing';
 import { Camera, Barcode, Save, Trash2, X } from 'lucide-react';
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../api';
 import type { Product } from '../api';
@@ -8,6 +7,7 @@ import { supabase } from '../supabase';
 import { resizeImage } from '../imageUtils';
 import { AppContext } from '../App';
 import { useAuth } from '../context/AuthContext';
+import { BarcodeScanner } from '../components/BarcodeScanner';
 
 const AddEditProduct = () => {
   const { id } = useParams();
@@ -16,14 +16,17 @@ const AddEditProduct = () => {
   const { profile } = useAuth();
   const isBusiness = profile?.role === 'BUSINESS';
   
+  // Find 'כללי' category to set as default if available
+  const generalCategory = categories.find(c => c.name === 'כללי') || categories[0];
+
   const [formData, setFormData] = useState<Partial<Product>>({
     name: '',
     targetQuantity: 1,
     currentQuantity: 0,
     price: 0,
     locationId: locations[0]?.id || '',
-    categoryId: categories[0]?.id || '',
-    storeId: stores[0]?.id || '',
+    categoryId: generalCategory?.id || '',
+    storeId: '', // Default to empty (no store)
     sku: '',
     image: '',
     purchaseUrl: ''
@@ -66,14 +69,7 @@ const AddEditProduct = () => {
     }
   };
 
-  const { ref: barcodeRef } = useZxing({
-    constraints: { video: { facingMode: 'environment' } },
-    onResult(result: any) {
-      setFormData(prev => ({ ...prev, sku: result.getText() }));
-      setIsScanning(false);
-    },
-    paused: !isScanning,
-  });
+  // Handled by BarcodeScanner component
 
   const onSave = async () => {
     try {
@@ -198,15 +194,13 @@ const AddEditProduct = () => {
         </div>
 
         {isScanning && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, background: '#000' }}>
-            <video ref={barcodeRef} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
-            <div style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 1001 }}>
-              <button className="glass-button secondary" onClick={() => setIsScanning(false)} style={{ background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', padding: '8px' }}><X size={24} /></button>
-            </div>
-            <div style={{ position: 'absolute', bottom: '32px', left: 0, right: 0, textAlign: 'center', color: 'white', zIndex: 1001, textShadow: '0 2px 4px rgba(0,0,0,0.8)', fontSize: '1.2rem', fontWeight: 'bold' }}>
-              סורק ברקוד...
-            </div>
-          </div>
+          <BarcodeScanner 
+            onResult={(decodedText) => {
+              setFormData(prev => ({ ...prev, sku: decodedText }));
+              setIsScanning(false);
+            }} 
+            onClose={() => setIsScanning(false)} 
+          />
         )}
 
         <div>

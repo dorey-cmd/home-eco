@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { fetchProducts, updateProduct } from '../api';
 import type { Product } from '../api';
 import { AppContext } from '../App';
-import { Plus, Minus, Search, Edit2 } from 'lucide-react';
+import { Plus, Minus, Search, Edit2, Barcode } from 'lucide-react';
+import { BarcodeScanner } from '../components/BarcodeScanner';
 
 const InventoryList = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -11,6 +12,7 @@ const InventoryList = () => {
   const [filterLocation, setFilterLocation] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterStore, setFilterStore] = useState('all');
+  const [isScanning, setIsScanning] = useState(false);
   
   const { locations, categories, stores } = useContext(AppContext);
   const navigate = useNavigate();
@@ -61,12 +63,25 @@ const InventoryList = () => {
         <input 
           type="text" 
           placeholder="חיפוש מוצר או ברקוד..." 
-          className="glass-input"
+          className="glass-input flex-1"
           style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
+        <button onClick={() => setIsScanning(true)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px' }}>
+          <Barcode size={20} />
+        </button>
       </div>
+
+      {isScanning && (
+        <BarcodeScanner 
+          onResult={(decodedText) => {
+            setSearchTerm(decodedText);
+            setIsScanning(false);
+          }} 
+          onClose={() => setIsScanning(false)} 
+        />
+      )}
 
       <div className="flex gap-2 mb-4" style={{ overflowX: 'auto', paddingBottom: '4px' }}>
         <select 

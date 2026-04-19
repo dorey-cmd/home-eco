@@ -22,6 +22,7 @@ DECLARE
   cat_dairy UUID := gen_random_uuid();
   cat_wine UUID := gen_random_uuid();
   cat_drinks UUID := gen_random_uuid();
+  cat_general UUID := gen_random_uuid();
 
   loc_fridge UUID := gen_random_uuid();
   loc_pantry UUID := gen_random_uuid();
@@ -46,6 +47,7 @@ BEGIN
 
   -- C. Insert Starter Kit Categories
   INSERT INTO public.categories (id, workspace_id, name, "order", image) VALUES
+    (cat_general, new_workspace_id, 'כללי', 0, 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=200'),
     (cat_veg, new_workspace_id, 'ירקות ופירות', 1, 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200'),
     (cat_clean, new_workspace_id, 'חומרי ניקוי', 2, 'https://images.unsplash.com/photo-1584820927598-cffecc6555cc?w=200'),
     (cat_dairy, new_workspace_id, 'מוצרי חלב', 3, 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=200'),
