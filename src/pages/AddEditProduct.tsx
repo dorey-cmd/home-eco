@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Camera, Barcode, Save, Trash2, X } from 'lucide-react';
+import { Camera, Barcode, Save, Trash2 } from 'lucide-react';
 import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../api';
 import type { Product } from '../api';
 import { supabase } from '../supabase';

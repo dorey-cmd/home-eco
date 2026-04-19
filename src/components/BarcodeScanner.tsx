@@ -27,7 +27,7 @@ export const BarcodeScanner = ({ onResult, onClose }: BarcodeScannerProps) => {
         onResult(decodedText);
         scannerRef.current?.clear();
       },
-      (error) => {
+      () => {
         // Ignored, scanning
       }
     );
