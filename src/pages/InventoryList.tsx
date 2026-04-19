@@ -59,7 +59,7 @@ const InventoryList = () => {
   return (
     <div>
       {/* STICKY HEADER */}
-      <div className="flex justify-between items-center mb-2" style={{ position: 'sticky', top: '82px', zIndex: 40, background: 'rgba(244, 246, 250, 0.9)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', padding: '12px 0', margin: '-12px 0 12px 0' }}>
+      <div className="flex justify-between items-center mb-2" style={{ position: 'sticky', top: '54px', zIndex: 40, background: 'rgba(244, 246, 250, 0.9)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', padding: '12px 0', margin: '-12px 0 12px 0' }}>
         <h1 className="page-title" style={{ marginBottom: 0, fontSize: '1.4rem' }}>המלאי שלי</h1>
         <div className="flex gap-2 bg-white rounded-xl p-1" style={{ border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }}>
           <button 
@@ -87,7 +87,7 @@ const InventoryList = () => {
       </div>
       
       {isSearchOpen && (
-        <div className="mb-4 animate-fade-in" style={{ position: 'sticky', top: '136px', zIndex: 39 }}>
+        <div className="mb-4 animate-fade-in" style={{ position: 'sticky', top: '108px', zIndex: 39 }}>
           <div className="glass-panel flex items-center px-4 mb-3" style={{ padding: '0 12px' }}>
             <Search size={20} className="text-secondary" />
             <input 
