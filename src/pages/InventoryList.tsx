@@ -202,7 +202,7 @@ const InventoryList = () => {
                 {p.image ? (
                   <img src={p.image} alt={p.name} className="product-card-img" />
                 ) : (
-                  <img src="/rakbuy-logo.png" alt="RakBuy Default" style={{ width: '40%', opacity: 0.15, objectFit: 'contain' }} />
+                  <img src="/rakbuy-logo.png" alt="RakBuy Default" style={{ width: '80%', opacity: 0.15, objectFit: 'contain' }} />
                 )}
               </div>
               

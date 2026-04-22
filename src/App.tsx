@@ -8,8 +8,9 @@ import AddEditProduct from './pages/AddEditProduct';
 import AppSettings from './pages/AppSettings';
 import ProfileSettings from './pages/ProfileSettings';
 import WorkspaceSettings from './pages/WorkspaceSettings';
-import Reports from './pages/Reports';
 import EntityManagement from './pages/EntityManagement';
+import Reports from './pages/Reports';
+import { ExcelImport } from './pages/ExcelImport';
 import AdminDashboard from './pages/AdminDashboard';
 import { fetchCategories, fetchLocations, fetchStores } from './api';
 import type { Category, Location, Store } from './api';
@@ -166,6 +167,7 @@ function AppContent() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/settings/profile" element={<ProfileSettings />} />
             <Route path="/settings/workspaces" element={<WorkspaceSettings />} />
+            <Route path="/settings/import" element={<ExcelImport />} />
             <Route path="/settings/:type" element={<EntityManagement />} />
             <Route path="/reports" element={<Reports />} />
           </Routes>
