@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Layers, MapPin, Store, ChevronLeft, ShieldAlert, LogOut, User, Building } from 'lucide-react';
+import { Layers, MapPin, Store, ChevronLeft, ShieldAlert, LogOut, User, Building, FileSpreadsheet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase';
 
@@ -49,6 +49,7 @@ const AppSettings = () => {
       <ActionButton icon={Layers} title="ניהול קטגוריות" description="מוצרי חלב, בשר, פירות וירקות, יבשים..." path="/settings/categories" />
       <ActionButton icon={Store} title={isBusiness ? "ניהול ספקים" : "ניהול חנויות קנייה"} description={isBusiness ? "עריכת הספקים הקבועים שלך" : "שופרסל, רמי לוי, ירקניה מקומית..."} path="/settings/stores" />
       <ActionButton icon={MapPin} title={isBusiness ? "ניהול סניפים ומתחמים" : "ניהול ארונות אחסון"} description={isBusiness ? "הגדרת רשימות לפי סניפי הרשת" : "מקרר, מזווה, ארון חומרי הניקוי..."} path="/settings/locations" />
+      <ActionButton icon={FileSpreadsheet} title="ייבוא מוצרים מאקסל" description="העלאת קובץ להקמת מוצרים מהירה" path="/settings/import" />
       <ActionButton icon={User} title="ניהול פרטים אישיים" description="צפייה ועריכת שם, אמצעי התקשרות ופרופיל" path="/settings/profile" />
       <ActionButton icon={Building} title="ניהול סביבות תפעול" description="הקמת מרחבים נפרדים, מעבר בין משתמשים והזמנת שותפים לניהול" path="/settings/workspaces" />
 

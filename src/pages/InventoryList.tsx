@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchProducts, updateProduct } from '../api';
 import type { Product } from '../api';
 import { AppContext } from '../App';
-import { Plus, Minus, Search, Edit2, Barcode, LayoutGrid, List } from 'lucide-react';
+import { Plus, Minus, Search, Edit2, Barcode, LayoutGrid, List, X } from 'lucide-react';
 import { BarcodeScanner } from '../components/BarcodeScanner';
 
 const InventoryList = () => {
@@ -98,7 +98,12 @@ const InventoryList = () => {
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
-            <button onClick={() => setIsScanning(true)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px' }}>
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px', display: 'flex', alignItems: 'center' }}>
+                <X size={18} />
+              </button>
+            )}
+            <button onClick={() => setIsScanning(true)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', padding: '4px', borderRight: '1px solid var(--glass-border)', marginLeft: '4px', paddingRight: '12px' }}>
               <Barcode size={20} />
             </button>
           </div>
@@ -197,7 +202,7 @@ const InventoryList = () => {
                 {p.image ? (
                   <img src={p.image} alt={p.name} className="product-card-img" />
                 ) : (
-                  <div style={{ fontSize: '3rem', color: 'rgba(0,0,0,0.1)', fontWeight: 'bold' }}>{p.name.charAt(0)}</div>
+                  <img src="/rakbuy-logo.png" alt="RakBuy Default" style={{ width: '40%', opacity: 0.15, objectFit: 'contain' }} />
                 )}
               </div>
               
